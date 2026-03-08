@@ -26,7 +26,7 @@ export default function PricingSection() {
   const [pricing, setPricing] = useState({
     starter: '$47',
     professional: '$97',
-    enterprise: 'Contact Sales',
+    enterprise: 'Let’s Talk',
   });
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function PricingSection() {
       setPricing({
         starter: `CAD$${starterCAD}`,
         professional: `CAD$${professionalCAD}`,
-        enterprise: 'Contact Sales',
+        enterprise: 'Let’s Talk',
       });
     }
   }, []);

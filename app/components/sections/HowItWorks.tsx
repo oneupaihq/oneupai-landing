@@ -11,13 +11,13 @@ const processSteps = [
     textClass: "text-[#0e0e0f]",
   },
   {
-    icon: "/frame-1171275681.svg",
-    title: "Review Your Website Before It Goes Live",
-    description:
-      "Check your details, preview your site, and make any final adjustments before launching.",
-    bgClass: "bg-[#1a80e7]",
-    textClass: "text-slate-50",
-  },
+  icon: "/hw-3.svg",
+  title: "Review Your Website Before It Goes Live",
+  description:
+    "Check your details, preview your site, and make any final adjustments before launching.",
+  bgClass: "bg-white", 
+  textClass: "text-[#0e0e0f]",
+},
   {
     icon: "/frame-1171275685.svg",
     title: "Choose a Plan To Power Your Site",
@@ -63,6 +63,7 @@ export default function HowItWorks  () {
               <Card
                   key={index}
                   className={`${step.bgClass} rounded-[20px] border-0 shadow-sm hover:shadow-xl hover:bg-[#1a80e7] transition-all duration-300 group`}
+                  
                 >
                   <CardContent className="flex flex-col items-center gap-8 p-6 md:p-8">
                     <div className="w-20 h-20 rounded-full flex items-center justify-center bg-white/20">
