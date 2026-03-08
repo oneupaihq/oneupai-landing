@@ -4,8 +4,8 @@ import { Card, CardContent } from "../ui/card";
 const features = [
   {
     icon: "/frame-11.svg",
-    headline: "Clear Words That Get You More Inquiries",
-    body: "Stop staring at a blank page. OneUpAI writes simple, convincing content for your type of business so visitors quickly understand what you do, what they get, and how to book.",
+    headline: "Engage Visitors Instantly",
+    body: "Your AI agent helps answer questions, guide visitors, and capture leads so potential customers “do not slip away while you are busy.”",
     bullets: [
       "A clear offer people understand fast",
       "Strong \"book now\" and \"get a quote\" prompts in the right spots",
@@ -14,8 +14,8 @@ const features = [
   },
   {
     icon: "/frame-11-1.svg",
-    headline: "A Site That Can Take Bookings Any Time",
-    body: "When someone is ready, they should not have to wait for a reply. Your site can capture the lead, book the time, and collect payment automatically.",
+    headline: "Simplify Booking",
+    body: "“Let customers book appointments through your website and keep everything organized by syncing with your personal calendar.”",
     bullets: [
       "Clients book calls or appointments any time",
       "Less back-and-forth messages",
@@ -24,8 +24,8 @@ const features = [
   },
   {
     icon: "/frame-11-3.svg",
-    headline: "Launch Today. We Handle the Setup.",
-    body: "We take care of hosting, mobile formatting, and the behind-the-scenes stuff that usually slows people down. You focus on customers. Your site stays up and running.",
+    headline: "Manage Content in One Place",
+    body: "Update your website, post to your social accounts, and get easy-to-understand insights, so you can see what is helping your business grow.",
     bullets: [
       "No coding or designers",
       "Looks great on phones automatically",
@@ -38,17 +38,21 @@ const lineSvg = "/images/waves-line.svg";
 
 export default function FeaturesListSection() {
   return (
-    <section id="features" className="relative w-full py-12 lg:py-20 overflow-hidden bg-white">
+    <section id="features" className="relative w-full py-12 lg:py-24 overflow-hidden bg-white">
       <div className="lg:block hidden absolute top-[25px] right-[-50px] w-[250px] z-10">
         <img src={lineSvg} className="w-full" alt="" />
       </div>
 
       <div className="max-w-[1320px] mx-auto px-4 md:px-8">
-        <div className="flex flex-col items-center gap-5 max-w-[700px] mx-auto mb-12 md:mb-16">
+        <div className="flex flex-col items-center gap-5 max-w-[900px] mx-auto mb-12 md:mb-16">
           <Badge variant="outline">Key Benefits</Badge>
           <h2 className="ff-jakarta font-bold text-[#000000] md:text-[40px] text-[36px] text-center leading-[110%]">
-            Copy That Helps People Take Action
+            Never Miss a Business Opportunity 
           </h2>
+          <p className="max-w-[948px] mx-auto text-[#1E293B] md:text-[20px] lg:text-xl text-base text-center md:leading-[30px] leading-[24px]">
+          With AI-powered visitor support, booking tools, calendar sync, and social media management, 
+          your website can keep working while you focus on your customers.
+        </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">

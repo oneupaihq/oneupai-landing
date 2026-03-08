@@ -48,7 +48,7 @@ const portfolioItems = [
 
 export default function PortfolioSection() {
   const [mounted, setMounted] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(3);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
   const [itemsPerView, setItemsPerView] = useState(3);
@@ -57,23 +57,20 @@ export default function PortfolioSection() {
   const innerRef = useRef<HTMLDivElement>(null);
 
   // Handle responsive items per view
-  useEffect(() => {
-    setMounted(true);
+ useEffect(() => {
+  const handleResize = () => {
+    let newItemsPerView = 3;
+    if (window.innerWidth < 768) newItemsPerView = 1;
+    else if (window.innerWidth < 1024) newItemsPerView = 2;
 
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setItemsPerView(1);
-      } else if (window.innerWidth < 1024) {
-        setItemsPerView(2);
-      } else {
-        setItemsPerView(3);
-      }
-    };
+    setItemsPerView(newItemsPerView);
+    setCurrentSlide(newItemsPerView); // ← ADD THIS LINE
+  };
 
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  handleResize();
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
 
   const itemsToShow = portfolioItems.length;
   const infiniteItems = [
@@ -181,16 +178,16 @@ export default function PortfolioSection() {
         <img src={lineSvg} className="w-full" alt="" />
       </div>
       <div className="max-w-[1320px] mx-auto px-4 md:px-8 relative z-10">
-        <div className="flex flex-col items-center gap-3 max-w-[750px] mx-auto mb-12 md:mb-16">
+        <div className="flex flex-col items-center gap-3 max-w-[650px] mx-auto mb-12 md:mb-16">
           <Badge variant="outline">Portfolio</Badge>
           <h2 className="ff-jakarta font-bold text-[#000000] md:text-[40px] text-[36px] text-center leading-[100%] md:whitespace-nowrap">
             Good-Looking Sites That Fit Your Business
           </h2>
           <p className="ff-Graphik font-normal text-[#1E293B] md:text-[20px] lg:text-xl text-base text-center md:leading-[30px] leading-[24px]">
-            These are not "one-size-fits-all" themes. They are made for service
-            businesses so your site feels clear, trustworthy, and easy to use.
+            Every template is tailor-made for a specific business type. Pick 
+            yours and your site is ready to go in minutes
           </p>
-        </div>
+        </div> 
 
         <div className="relative">
           <div

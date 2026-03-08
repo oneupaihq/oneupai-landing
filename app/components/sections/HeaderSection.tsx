@@ -317,7 +317,7 @@ export default function HeaderSection() {
 
           {/* ── Headline ── */}
           <div className="flex flex-col xl:max-w-5xl lg:max-w-4xl md:max-w-2xl">
-            <h1 className="ff-jakarta font-[700] text-[#0e0e0f] xl:text-[50px] lg:text-[44px] md:text-[40px] text-[34px] leading-[120%] mb-5 md:mb-6">
+            <h1 className="ff-jakarta font-[700] text-[#0e0e0f] xl:text-[50px] lg:text-[44px] md:text-[40px] text-[34px] leading-[120%] mb-5 md:mb-9">
               Get More Customers
               <br />
               <span>
@@ -361,9 +361,8 @@ export default function HeaderSection() {
               </motion.span>
             </h1>
             <p className="max-w-[700px] ff-Graphik font-normal text-[#1E293B] md:text-xl text-base leading-[24px] mb-8 md:mb-9">
-              OneUpAI creates a beautiful website with ready-to-use copy,
-              built-in booking, and payments. You can start getting leads and
-              appointments today. No designers. No tech headaches.
+              While you're busy with customers, your website is answering questions, 
+              taking deposits, and booking the next one. No designers. No tech headaches.
             </p>
           </div>
 

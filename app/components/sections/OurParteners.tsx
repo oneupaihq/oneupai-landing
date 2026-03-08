@@ -40,18 +40,18 @@ export default function OurPartners() {
     <section className="w-full pt-12 md:pt-16 lg:pt-20 bg-white">
 
       {/* ── Header ── */}
-      <div className="flex flex-col items-center gap-4 max-w-[700px] mx-auto mb-12 md:mb-16">
+      <div className="flex flex-col items-center gap-4  mb-12 md:mb-16">
             <Badge
               variant="outline" className="px-4"
             >
               Trusted integrations
             </Badge>
-            <h2 className="ff-jakarta font-bold text-[#000000] md:text-[40px] text-[36px] text-center leading-[120%]">
-             Our Partners and Integrations
+            <h2 className="ff-jakarta font-bold text-[#000000] max-w-[900px] mx-auto md:text-[40px] text-[36px] text-center leading-[120%]">
+             Integrated with the Best Tools in the Business
             </h2>
-        <p className="ff-Graphik font-normal text-[#1E293B] md:text-[20px] lg:text-xl text-base text-center md:leading-[30px] leading-[24px]">
-          We integrate with the world&apos;s leading AI, cloud, and developer
-          platforms so your business runs on proven, enterprise-grade technology.
+        <p className="ff-Graphik font-normal text-[#1E293B] max-w-[600px] mx-auto md:text-[20px] lg:text-xl text-base text-center md:leading-[30px] leading-[24px]">
+          Everything your business needs is already built in, 
+          from payments and bookings to AI and social media.
         </p>
           </div>
 

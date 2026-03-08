@@ -394,10 +394,10 @@ export default function UGC() {
             <Badge
               variant="outline" className="px-4"
             >
-              UGC
+              Customer Stories
             </Badge>
             <h2 className="ff-jakarta font-bold text-[#000000] md:text-[40px] text-[36px] text-center leading-[100%]">
-              See Real Customers Share Their Success Stories
+              Real Users. Real Results.
             </h2>
           </div>
 

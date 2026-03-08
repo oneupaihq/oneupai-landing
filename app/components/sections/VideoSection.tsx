@@ -109,11 +109,11 @@ export default function VideoSection() {
           Demo
         </Badge>
         <h2 className="max-w-[680px] mx-auto font-bold text-black md:text-[40px] text-[36px] text-center leading-[120%]">
-          See Your "Digital Office" Get Built in Real Time
+          Is Your Website Helping You Get More Customers?
         </h2>
         <p className="max-w-[948px] mx-auto text-[#1E293B] md:text-[20px] lg:text-xl text-base text-center md:leading-[30px] leading-[24px]">
-          Most website builders still make you do the hard part. OneUpAI starts with a few questions,
-          then creates your pages, writes the copy, and connects booking automatically.
+          Answer a few questions about your business. OneUpAI builds your site, sets up your booking 
+          calendar, and lets you promote your business and take on customers TODAY.
         </p>
       </div>
 

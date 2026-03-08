@@ -7,20 +7,20 @@ import { usePopup } from "./PopupContext";
 
 const cards = [
   {
-    title: "Education",
-    description: "Learn how your AI website actually works and how to make it work harder for your business. Simple training, no tech background needed.",
+    title: "Learn",
+    description: "Short, simple lessons that show you how to use and promote your website. No tech background needed.",
     icon: "/images/piller-ic1.svg",
     backgroundImage: "/images/piller1.png",
   },
   {
-    title: "DIY Tools",
-    description: "Ready-made scripts, templates, and workflows you can plug straight into your OneUpAI site. Skip the guesswork and start with what already works.",
+    title: "Tools",
+    description: "Access ready-made templates, guides, and resources you can use right away.",
     icon: "/images/piller-ic2.svg",
     backgroundImage: "/images/piller2.png",
   },
   {
     title: "Support",
-    description: "Get answers fast and help shape what comes next. Ask questions, join live sessions, and get unstuck quickly. Submit feature requests and vote on what gets built.",
+    description: "Ask questions, join live sessions, and get support fast. You also get a say in what gets built next.",
     icon: "/images/piller-ic3.svg",
     backgroundImage: "/images/piller3.png",
   },
@@ -55,10 +55,11 @@ const { openCommunityPopup } = usePopup();
                       Exclusive Community Access
                     </Badge>
                     <h2 className="ff-jakarta font-bold text-[#000000] md:text-[40px] text-[36px] text-center leading-[120%]">
-                     Three Pillars. One Mission.
+                     Everything You Need to Succeed
                     </h2>
                 <p className="ff-Graphik font-normal text-[#1E293B] md:text-[20px] lg:text-xl text-base text-center md:leading-[30px] leading-[24px]">
-                  Everything you need to get more out of your AI-powered website.
+                  Every plan includes free access to learning resources, 
+                  ready-made tools, and a support community to support your growth
                 </p>
                   </div>
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-3 items-center justify-items-center">
@@ -84,12 +85,14 @@ const { openCommunityPopup } = usePopup();
                 <div className="text-center mb-8">
                 <img src={card.icon} className="mx-auto" alt="" />
                 </div>
-                <h3 className="ff-jakarta text-[28px] md:text-[32px] font-medium text-[#000000] leading-[100%] mb-6">
+                <div className="md:min-h-[128px]">
+                  <h3 className="ff-jakarta text-[28px] md:text-[32px] font-medium text-[#000000] leading-[100%] mb-6">
                   {card.title}
                 </h3>
                 <p className="ff-jakarta mt-2 text-[16px] md:text-[18px] text-[#1E293B] leading-[24px] md:px-2">
                   {card.description}
                 </p>
+                </div>
               </div>
             </div>
           );

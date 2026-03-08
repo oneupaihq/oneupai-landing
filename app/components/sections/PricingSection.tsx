@@ -45,8 +45,8 @@ export default function PricingSection() {
 
   const pricingPlans = [
     {
-      title: "STARTER",
-      description: "Perfect for solo pros and new businesses.",
+      title: "LAUNCH",
+      description: "Everything you need to get your first customers online.",
       price: pricing.starter,
       period: "/mo",
       isPopular: false,
@@ -54,8 +54,8 @@ export default function PricingSection() {
       ctaType: "link" as const,
     },
     {
-      title: "PROFESSIONAL",
-      description: "For growing businesses that want more control and fewer limits.",
+      title: "GROW",
+      description: "Go further with more features and fewer limits.",
       price: pricing.professional,
       period: "/mo",
       isPopular: true,
@@ -63,38 +63,40 @@ export default function PricingSection() {
       ctaType: "link" as const,
     },
     {
-      title: "AGENCY / ENTERPRISE",
-      description: "For agencies, franchises, and multi-location operators.",
+      title: "SCALE",
+      description: "A tailor-made solution built around your business, not the other way around.",
       price: pricing.enterprise,
       period: "",
       isPopular: false,
-      ctaText: "Talk to Sales",
+      ctaText: "Book a Call",
       ctaType: "popup" as const,
     },
   ];
 
   const planFeatures = [
     [
-      "1 AI-powered website (pick any template)",
-      "24/7 website chat that answers questions and captures leads",
-      "Booking system (up to 100 bookings/month, upgrade anytime)",
-      "Stripe payments (checkout enabled)",
-      "Two-way Google Calendar sync",
-      "Hosting included (SSL + free subdomain)",
+      "1 AI-powered website, pick any template",
+      "AI assistant that answers visitor questions and captures leads around the clock",
+      "Online booking system, up to 100 appointments a month",
+      "Accept payments directly on your site",
+      "Syncs with your Google Calendar automatically",
+      "Hosting, security, and a free web address included",
     ],
     [
-      "Everything in Starter, plus:",
-      "Train your website chat using your own files (upload up to 5 PDFs/docs)",
+      "Everything in Launch, plus:",
+      "Train your AI assistant using your own documents and business info",
       "No booking limits",
-      "Unlimited pages",
-      "Remove OneUpAI branding",
+      "Publish to up to 10 social media platforms from one place",
+      "Your branding only, no OneUpAI logo",
       "Priority support",
     ],
     [
-      "White-label portal (resell under your brand)",
-      "Multi-location management",
-      "API access and custom integrations",
-      "Dedicated account manager",
+      "Everything in Grow, plus",
+      "Custom website built specifically for your business",
+      "Support for multiple websites from one account",
+      "Custom integrations including voice and AI agents",
+      "Advanced analytics and API support",
+      "Dedicated account manager"
     ],
   ];
 
@@ -107,10 +109,10 @@ export default function PricingSection() {
         <div className="flex flex-col items-center gap-5 max-w-[700px] mx-auto mb-12 md:mb-16">
           <Badge variant="outline" className="px-4">Pricing</Badge>
           <h2 className="ff-jakarta font-bold text-[#000000] md:text-[40px] text-[36px] text-center leading-[120%]">
-            Pick the Plan That Matches Where You're At
+            More Than a Website. A Smart Tool That Pays for Itself. 
           </h2>
           <p className="ff-Graphik font-normal text-[#1E293B] md:text-[20px] lg:text-xl text-base text-center md:leading-[30px] leading-[24px]">
-            Start small. Move up when you want more built-in features.
+            Start with a free trial. Upgrade when your business is ready. Cancel anytime.
           </p>
         </div>
 
