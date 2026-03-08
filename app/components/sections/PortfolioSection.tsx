@@ -58,13 +58,14 @@ export default function PortfolioSection() {
 
   // Handle responsive items per view
  useEffect(() => {
+  setMounted(true);
   const handleResize = () => {
     let newItemsPerView = 3;
     if (window.innerWidth < 768) newItemsPerView = 1;
     else if (window.innerWidth < 1024) newItemsPerView = 2;
 
     setItemsPerView(newItemsPerView);
-    setCurrentSlide(newItemsPerView); // ← ADD THIS LINE
+    setCurrentSlide(newItemsPerView); 
   };
 
   handleResize();
@@ -180,7 +181,7 @@ export default function PortfolioSection() {
       <div className="max-w-[1320px] mx-auto px-4 md:px-8 relative z-10">
         <div className="flex flex-col items-center gap-3 max-w-[650px] mx-auto mb-12 md:mb-16">
           <Badge variant="outline">Portfolio</Badge>
-          <h2 className="ff-jakarta font-bold text-[#000000] md:text-[40px] text-[36px] text-center leading-[100%] md:whitespace-nowrap">
+          <h2 className="ff-jakarta font-bold text-[#000000] md:text-[40px] text-[36px] text-center leading-[120%] md:whitespace-nowrap">
             Good-Looking Sites That Fit Your Business
           </h2>
           <p className="ff-Graphik font-normal text-[#1E293B] md:text-[20px] lg:text-xl text-base text-center md:leading-[30px] leading-[24px]">
