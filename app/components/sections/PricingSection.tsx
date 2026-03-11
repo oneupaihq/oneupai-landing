@@ -29,6 +29,10 @@ export default function PricingSection() {
     enterprise: 'Let’s Talk',
   });
 
+  const [scalePeriod, setScalePeriod] = useState('/mo');
+
+  const [scalePrice, setScalePrice] = useState('$297');
+
   useEffect(() => {
     setMounted(true);
     const country = getCountryFromCookie();
@@ -46,7 +50,7 @@ export default function PricingSection() {
   const pricingPlans = [
     {
       title: "LAUNCH",
-      description: "Everything you need to get your first customers online.",
+      description: "Your business, open 24/7 — capturing leads while you sleep",
       price: pricing.starter,
       period: "/mo",
       isPopular: false,
@@ -55,7 +59,7 @@ export default function PricingSection() {
     },
     {
       title: "GROW",
-      description: "Go further with more features and fewer limits.",
+      description: "An AI that knows your business and scales your reach across every channel",
       price: pricing.professional,
       period: "/mo",
       isPopular: true,
@@ -64,9 +68,9 @@ export default function PricingSection() {
     },
     {
       title: "SCALE",
-      description: "A tailor-made solution built around your business, not the other way around.",
-      price: pricing.enterprise,
-      period: "",
+      description: "Built around your business model, not the other way around",
+      price: scalePrice,
+      period: scalePeriod,
       isPopular: false,
       ctaText: "Book a Call",
       ctaType: "popup" as const,
@@ -75,28 +79,32 @@ export default function PricingSection() {
 
   const planFeatures = [
     [
-      "1 AI-powered website, pick any template",
-      "AI assistant that answers visitor questions and captures leads around the clock",
-      "Online booking system, up to 100 appointments a month",
-      "Accept payments directly on your site",
-      "Syncs with your Google Calendar automatically",
-      "Hosting, security, and a free web address included",
+      "Support for 3 AI Powered Websites",
+      "A professional AI-powered website live in minutes, not months",
+      "AI assistant that qualifies visitors and captures leads around the clock with no human needed",
+      "Online booking that fills your calendar automatically, up to 100 appointments/month",
+      "Accept payments directly on your site and cut out the back-and-forth invoicing",
+      "Two-way Google Calendar sync with zero double bookings and zero missed appointments",
+      "Hosting, SSL security, and a free domain bundled into one bill with nothing else to manage",
     ],
     [
       "Everything in Launch, plus:",
-      "Train your AI assistant using your own documents and business info",
-      "No booking limits",
-      "Publish to up to 10 social media platforms from one place",
-      "Your branding only, no OneUpAI logo",
-      "Priority support",
+      "Support for 1 AI Powered Website",
+      "Train your AI on your actual docs, FAQs, and offers so it sells for you, not just answers",
+      "Unlimited bookings to remove the ceiling on how much revenue your calendar can hold",
+      "Publish across all your social media accounts from one place so you stay visible without the busywork",
+      "Your brand front and center with the OneUpAI badge removed so it looks 100% yours",
+      "Simple dashboard showing which pages, offers, and keywords are actually bringing in customers",
+      "Priority support so when something matters, you don't wait in a queue",
     ],
     [
-      "Everything in Grow, plus",
-      "Custom website built specifically for your business",
-      "Support for multiple websites from one account",
-      "Custom integrations including voice and AI agents",
-      "Advanced analytics and API support",
-      "Dedicated account manager"
+      "Everything in Grow, plus:",
+      "A fully custom website built specifically around how your business wins customers",
+      "Run multiple websites from one account, ideal for agencies, franchises, or multi-location businesses",
+      "Manage multiple brands or locations from a single account so you can scale without chaos",
+      "Voice AI and custom agents integrated into your workflow to automate what's eating your team's time",
+      "Advanced reporting and integrations so you can connect your tools and see what's driving growth",
+      "Dedicated account manager who acts as a strategic partner in your corner, not just a support ticket",
     ],
   ];
 
@@ -139,6 +147,11 @@ export default function PricingSection() {
                 </p>
 
                 <div className="mb-4 md:min-h-[65px]">
+                  {plan.title === "SCALE" && (
+                    <p className="ff-Graphik font-normal text-slate-600 text-xs mb-1">
+                      Starting from
+                    </p>
+                  )}
                   <div className="flex items-baseline gap-1">
                     <span className="ff-jakarta font-bold text-[#0e0e0f] text-[34px] xl:text-[40px] leading-[100%]">
                       {plan.price}
@@ -162,7 +175,7 @@ export default function PricingSection() {
 
                 <div className="flex-1">
                   <h4 className="ff-jakarta font-semibold text-[#1a80e7] text-base mb-6">
-                    Key Features
+                    What you get
                   </h4>
                   <ul className="flex flex-col gap-3">
                     {planFeatures[index].map((feature, idx) => (
@@ -171,7 +184,7 @@ export default function PricingSection() {
                         className="flex items-start gap-3 border-b border-[#1E3A8A0D] pb-2"
                       >
                         <div className="flex-shrink-0 mt-0.5">
-                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <svg width="19" height="19" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16ZM11.8566 6.19113C12.1002 5.85614 12.0261 5.38708 11.6911 5.14345C11.3561 4.89982 10.8871 4.97388 10.6434 5.30887L7.15969 10.099L5.28033 8.21967C4.98744 7.92678 4.51256 7.92678 4.21967 8.21967C3.92678 8.51256 3.92678 8.98744 4.21967 9.28033L6.71967 11.7803C6.87477 11.9354 7.08999 12.0149 7.30867 11.9977C7.52734 11.9805 7.72754 11.8685 7.85655 11.6911L11.8566 6.19113Z" fill="#1A80E7"/>
                           </svg>
                         </div>
