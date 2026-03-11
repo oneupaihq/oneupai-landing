@@ -1,0 +1,223 @@
+"use client";
+
+import React, { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+export type PopupVariant = "community" | "sales";
+
+interface FormPopupProps {
+  isOpen: boolean;
+  onClose: () => void;
+  variant: PopupVariant;
+}
+
+const config = {
+  community: {
+    heading: "Join Our Community",
+    description:
+      "Connect with thousands of business owners using AI to grow faster. Get tips, templates, and early access to new features — completely free.",
+    submitLabel: "Join the Community",
+    submitHandler: async (data: { name: string; email: string; message?: string }) => {
+      // TODO: handle community signup
+      console.log("Community signup:", data);
+    },
+  },
+  sales: {
+    heading: "How Can We Help?",
+    description:
+      "Tell us about your business and what you’re looking for. Our team will reach out within a few hours to schedule a call.",
+    submitLabel: "Send Message",
+    submitHandler: async (data: { name: string; email: string; message?: string }) => {
+      // TODO: handle sales inquiry
+      console.log("Sales inquiry:", data);
+    },
+  },
+};
+
+export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) {
+  const { heading, description, submitLabel, submitHandler } = config[variant];
+  const showTextarea = variant === "sales";
+
+  // Close on Escape
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    if (isOpen) document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [isOpen, onClose]);
+
+  // Lock body scroll
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [isOpen]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const data = {
+      name: (form.elements.namedItem("name") as HTMLInputElement).value,
+      email: (form.elements.namedItem("email") as HTMLInputElement).value,
+      ...(showTextarea && {
+        message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
+      }),
+    };
+    await submitHandler(data);
+    onClose();
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            key="backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22 }}
+            onClick={onClose}
+            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
+          />
+
+          {/* Modal */}
+          <motion.div
+            key="modal"
+            initial={{ opacity: 0, scale: 0.94, y: 24 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.94, y: 16 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+          >
+            <div
+              className="pointer-events-auto w-full max-w-[630px] rounded-[20px] shadow-2xl flex flex-co"
+              style={{ background: "#EAF6FB", maxHeight: "calc(100vh - 32px)" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="overflow-y-auto overscroll-contain flex-1 p-7 sm:p-9 ff-jakarta" style={{ scrollbarWidth: "none" }}>
+
+                {/* Top bar */}
+                <div className="flex justify-between items-center -mt-1 -mr-1 mb-8">
+                  <img
+                    className="w-20 md:w-28 h-auto"
+                    alt="Company Logo"
+                    src="/images/logo.svg"
+                  />
+                  <button
+                    onClick={onClose}
+                    className="w-8 h-8 flex items-center justify-center rounded-full text-gray-600 bg-black/10 hover:bg-black/15 transition-all duration-200"
+                    aria-label="Close"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Heading */}
+                <h2 className="text-center ff-jakarta text-2xl sm:text-3xl font-bold text-[#1A80E7] mb-3 leading-tight">
+                  {heading}
+                </h2>
+
+                {/* Description */}
+                <p className="text-[#140505] text-center max-w-[500px] mx-auto text-sm mb-5 ff-Graphik leading-relaxed">
+                  {description}
+                </p>
+
+                
+
+                {/* Divider */}
+                <div className="h-px bg-[#4065d33b] mb-6" />
+
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+
+                  {/* Full Name */}
+                  <div>
+                    <label className="block text-xs font-semibold text-[#12715B80] mb-1.5 tracking-wide uppercase">
+                      Full Name
+                    </label>
+                    <input
+                      name="name"
+                      type="text"
+                      placeholder="John Smith"
+                      required
+                      className="w-full rounded-[12px] bg-white border border-transparent px-4 md:py-4 py-3 text-sm text-gray-700 placeholder-[#00000080] outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition-all duration-200 shadow-sm"
+                    />
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <label className="block text-xs font-semibold text-[#12715B80] mb-1.5 tracking-wide uppercase">
+                      Email Address
+                    </label>
+                    <input
+                      name="email"
+                      type="email"
+                      placeholder="name@company.com"
+                      required
+                      className="w-full rounded-[12px] bg-white border border-transparent px-4 md:py-4 py-3 text-sm text-gray-700 placeholder-[#00000080] outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition-all duration-200 shadow-sm"
+                    />
+                  </div>
+
+                  {/* Message — sales only */}
+                  <AnimatePresence initial={false}>
+                    {showTextarea && (
+                      <motion.div
+                        key="message-field"
+                        initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                        animate={{ opacity: 1, height: "auto", marginTop: 0 }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                        // style={{ overflow: "hidden" }}
+                      >
+                        <label className="block text-xs font-semibold text-[#12715B80] mb-1.5 tracking-wide uppercase">
+                          How can we help?
+                        </label>
+                        <textarea
+                          name="message"
+                          placeholder="Tell us about your business and what you're looking for..."
+                          required
+                          rows={4}
+                          className="w-full rounded-[12px] bg-white border border-transparent px-4 py-3 text-sm text-gray-700 placeholder-[#00000080] outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition-all duration-200 shadow-sm resize-none"
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Submit */}
+                  <button
+                    type="submit"
+                    className="mt-2 w-full rounded-[12px] bg-[#1A80E7] hover:bg-[#155FA0] active:scale-[0.98] text-white font-bold text-base md:py-4 py-3 transition-all duration-200 shadow-md hover:shadow-lg"
+                  >
+                    {submitLabel}
+                  </button>
+
+                  <div className="text-center">
+                    {/* Call us — sales only */}
+                {variant === "sales" && (
+                  <p className="ff-Graphik md:text-[15px] text-sm text-[#000000] md:mt-4 mt-1">
+                    Prefer to talk? &nbsp;&nbsp;
+                    <a
+                      href="tel:+13089209233"
+                      className="inline-flex items-center gap-1 text-[#1A80E7] hover:text-[#155FA0] font-medium transition-colors duration-150"
+                    >
+                      <svg width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16.5 12.69v2.25a1.5 1.5 0 0 1-1.635 1.5A14.835 14.835 0 0 1 8.393 14.1a14.61 14.61 0 0 1-4.5-4.5 14.835 14.835 0 0 1-2.34-6.517A1.5 1.5 0 0 1 3.045 1.5H5.3a1.5 1.5 0 0 1 1.5 1.29c.095.72.27 1.428.525 2.108a1.5 1.5 0 0 1-.337 1.582L6.022 7.447a12 12 0 0 0 4.5 4.5l.967-.967a1.5 1.5 0 0 1 1.582-.337c.68.254 1.388.43 2.108.525A1.5 1.5 0 0 1 16.5 12.69Z" fill="currentColor"/>
+                      </svg>
+                      +1 (308) 920-9233
+                    </a>
+                  </p>
+                )}
+                  </div>
+                </form>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
