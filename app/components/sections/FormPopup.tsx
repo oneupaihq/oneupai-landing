@@ -246,7 +246,9 @@ export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) 
                   {/* Success Message */}
                   {submitSuccess && (
                     <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
-                      {variant === 'community' ? 'Welcome to the community! Check your email for next steps.' : 'Message sent! We\'ll get back to you within a few hours.'}
+                      {variant === 'community' 
+                        ? 'Welcome to the community! Check your email for a confirmation message with next steps.' 
+                        : 'Message sent! We\'ll get back to you within a few hours. Check your email for confirmation details.'}
                     </div>
                   )}
 

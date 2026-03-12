@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Determine email template and recipient
+    // Determine email templates and recipient
     const recipientEmail = process.env.CONTACT_EMAIL || process.env.GMAIL_USER;
     
     if (!recipientEmail) {
@@ -38,11 +38,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let template;
+    let notificationTemplate, confirmationTemplate;
     if (type === 'community') {
-      template = emailTemplates.communitySignup({ name, email });
+      notificationTemplate = emailTemplates.communitySignup({ name, email });
+      confirmationTemplate = emailTemplates.communityConfirmation({ name, email });
     } else if (type === 'sales') {
-      template = emailTemplates.salesInquiry({ name, email, message });
+      notificationTemplate = emailTemplates.salesInquiry({ name, email, message });
+      confirmationTemplate = emailTemplates.salesConfirmation({ name, email, message });
     } else {
       return NextResponse.json(
         { success: false, error: 'Invalid form type' },
@@ -50,18 +52,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Send email
-    const result = await sendEmail(recipientEmail, template);
+    // Send notification email to admin
+    const notificationResult = await sendEmail(recipientEmail, notificationTemplate);
+    
+    // Send confirmation email to user
+    const confirmationResult = await sendEmail(email, confirmationTemplate);
 
-    if (result.success) {
+    // Check if both emails were sent successfully
+    if (notificationResult.success && confirmationResult.success) {
       return NextResponse.json({
         success: true,
-        message: 'Email sent successfully',
-        messageId: result.messageId,
+        message: 'Emails sent successfully',
+        notificationId: notificationResult.messageId,
+        confirmationId: confirmationResult.messageId,
       });
     } else {
+      // If either email failed, return error details
+      const errors = [];
+      if (!notificationResult.success) errors.push(`Notification: ${notificationResult.error}`);
+      if (!confirmationResult.success) errors.push(`Confirmation: ${confirmationResult.error}`);
+      
       return NextResponse.json(
-        { success: false, error: result.error },
+        { success: false, error: `Email sending failed: ${errors.join(', ')}` },
         { status: 500 }
       );
     }
