@@ -79,7 +79,7 @@ export default function PricingSection() {
 
   const planFeatures = [
     [
-      "Support for 3 AI Powered Websites",
+      "Support for 1 AI Powered Website",
       "A professional AI-powered website live in minutes, not months",
       "AI assistant that qualifies visitors and captures leads around the clock with no human needed",
       "Online booking that fills your calendar automatically, up to 100 appointments/month",
@@ -89,7 +89,7 @@ export default function PricingSection() {
     ],
     [
       "Everything in Launch, plus:",
-      "Support for 1 AI Powered Website",
+      "Support for 3 AI Powered Websites",
       "Train your AI on your actual docs, FAQs, and offers so it sells for you, not just answers",
       "Unlimited bookings to remove the ceiling on how much revenue your calendar can hold",
       "Publish across all your social media accounts from one place so you stay visible without the busywork",
