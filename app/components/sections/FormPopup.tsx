@@ -18,8 +18,23 @@ const config = {
       "Connect with thousands of business owners using AI to grow faster. Get tips, templates, and early access to new features — completely free.",
     submitLabel: "Join the Community",
     submitHandler: async (data: { name: string; email: string; message?: string }) => {
-      // TODO: handle community signup
-      console.log("Community signup:", data);
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          type: 'community',
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to send email');
+      }
+
+      return response.json();
     },
   },
   sales: {
@@ -28,8 +43,23 @@ const config = {
       "Tell us about your business and what you’re looking for. Our team will reach out within a few hours to schedule a call.",
     submitLabel: "Send Message",
     submitHandler: async (data: { name: string; email: string; message?: string }) => {
-      // TODO: handle sales inquiry
-      console.log("Sales inquiry:", data);
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          type: 'sales',
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to send email');
+      }
+
+      return response.json();
     },
   },
 };
@@ -37,6 +67,9 @@ const config = {
 export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) {
   const { heading, description, submitLabel, submitHandler } = config[variant];
   const showTextarea = variant === "sales";
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [submitError, setSubmitError] = React.useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = React.useState(false);
 
   // Close on Escape
   useEffect(() => {
@@ -55,6 +88,10 @@ export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(false);
+
     const form = e.currentTarget;
     const data = {
       name: (form.elements.namedItem("name") as HTMLInputElement).value,
@@ -63,8 +100,20 @@ export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) 
         message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
       }),
     };
-    await submitHandler(data);
-    onClose();
+
+    try {
+      await submitHandler(data);
+      setSubmitSuccess(true);
+      // Close after 2 seconds to show success message
+      setTimeout(() => {
+        onClose();
+        setSubmitSuccess(false);
+      }, 2000);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'An error occurred');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -187,12 +236,44 @@ export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) 
                     )}
                   </AnimatePresence>
 
+                  {/* Error Message */}
+                  {submitError && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                      {submitError}
+                    </div>
+                  )}
+
+                  {/* Success Message */}
+                  {submitSuccess && (
+                    <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
+                      {variant === 'community' ? 'Welcome to the community! Check your email for next steps.' : 'Message sent! We\'ll get back to you within a few hours.'}
+                    </div>
+                  )}
+
                   {/* Submit */}
                   <button
                     type="submit"
-                    className="mt-2 w-full rounded-[12px] bg-[#1A80E7] hover:bg-[#155FA0] active:scale-[0.98] text-white font-bold text-base md:py-4 py-3 transition-all duration-200 shadow-md hover:shadow-lg"
+                    disabled={isSubmitting || submitSuccess}
+                    className="mt-2 w-full rounded-[12px] bg-[#1A80E7] hover:bg-[#155FA0] active:scale-[0.98] text-white font-bold text-base md:py-4 py-3 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#1A80E7] disabled:active:scale-100"
                   >
-                    {submitLabel}
+                    {isSubmitting ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        Sending...
+                      </span>
+                    ) : submitSuccess ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        Sent!
+                      </span>
+                    ) : (
+                      submitLabel
+                    )}
                   </button>
 
                   <div className="text-center">

@@ -169,7 +169,9 @@ export default function PricingSection() {
                   </Button>
                 ) : (
                   <Button variant="primary" size="md" className="mb-6" asChild>
-                    <a href="https://dashboard.oneupai.com/onboard">{plan.ctaText}</a>
+                    <a href="https://dashboard.oneupai.com/onboard">
+                      {plan.ctaText}
+                    </a>
                   </Button>
                 )}
 

@@ -9,7 +9,7 @@ const lineSvg = "/images/waves-line.svg";
 
 const portfolioItems = [
   {
-    image: "/services/fractional.webp",
+    image: "/services/fraction.png",
     title: "Consultants and Coaches",
     templateUrl: "/fractional-ai-website-template",
   },
