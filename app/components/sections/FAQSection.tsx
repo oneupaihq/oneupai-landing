@@ -82,13 +82,13 @@ export default function FAQSection () {
                
                 <div>
                   <p className="ff-Graphik font-normal text-[#1E293B] text-[17px] leading-[100%] mb-1.5">
-                    For technical issues
+                    Questions?
                   </p>
                   <a
-                    href="mailto:success@oneupai.com"
+                    href="mailto:start@oneupai.com"
                     className="ff-jakarta font-bold text-[#0e0e0f] text-[19px] md:text-[22px] leading-[100%] hover:text-[#1a80e7] transition-colors break-all"
                   >
-                    success@oneupai.com
+                    start@oneupai.com
                   </a>
                 </div>
                  <div className="flex-shrink-0 h-8 w-8">
