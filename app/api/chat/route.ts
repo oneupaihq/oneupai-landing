@@ -13,8 +13,8 @@ const requestCounts = new Map<string, { count: number; resetTime: number }>();
 const responseCache = new Map<string, { response: string; timestamp: number }>();
 
 // Token optimization settings - Configurable via environment variables
-const MAX_TOKENS = parseInt(process.env.CHAT_MAX_TOKENS || '200'); // Optimal for concise responses
-const TEMPERATURE = parseFloat(process.env.CHAT_TEMPERATURE || '0.2'); // More consistent responses
+const MAX_TOKENS = parseInt(process.env.CHAT_MAX_TOKENS || '800'); // Increased for complete responses
+const TEMPERATURE = parseFloat(process.env.CHAT_TEMPERATURE || '0.3'); // Slightly more creative
 const MAX_REQUESTS_PER_WINDOW = parseInt(process.env.CHAT_RATE_LIMIT_REQUESTS || '15'); // Better UX
 const CACHE_DURATION = parseInt(process.env.CHAT_CACHE_DURATION || '600000'); // 10 minutes default
 
@@ -133,7 +133,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Optimize conversation history to reduce token usage
-    const recentMessages = messages.slice(-4); // Reduced from 6 to 4 messages (2 exchanges) for cost optimization
+    const recentMessages = messages.slice(-6); // Increased to 6 messages (3 exchanges) for better context
 
     // Check cache for common questions
     const cacheKey = getCacheKey(recentMessages);
@@ -177,9 +177,9 @@ OneUpAI creates professional, AI-powered websites in under 5 minutes with:
 ## Your communication style:
 - **Conversational & friendly**: Use a warm, approachable tone
 - **Benefit-focused**: Always highlight how OneUpAI saves time and gets customers
-- **Structured responses**: Use bullet points, emojis, and clear formatting when helpful
+- **Helpful and thorough**: Provide complete answers with sufficient detail
+- **Well-structured**: Use bullet points, emojis, and clear formatting when helpful
 - **Action-oriented**: Include clear next steps and CTAs
-- **Concise but complete**: 2-4 sentences with key details
 
 ## Response format guidelines:
 - Start with a direct answer to their question
@@ -188,11 +188,20 @@ OneUpAI creates professional, AI-powered websites in under 5 minutes with:
 - Use emojis sparingly but effectively (🚀 💼 ⚡ 💰 📈)
 - For pricing questions, mention the value proposition
 - For feature questions, explain the business impact
+- **For URLs**: Format as [BUTTON:text|url] for clickable buttons (e.g., [BUTTON:Get Started|https://dashboard.oneupai.com/onboard])
 
 ## Call-to-action options:
-- "Ready to get started? Visit https://dashboard.oneupai.com/onboard"
-- "Want to see it in action? Check out our demo at [link]"
+- "Ready to get started? [BUTTON:Start Building Your Website|https://dashboard.oneupai.com/onboard]"
+- "Want to see it in action? [BUTTON:View Demo|https://oneupai.com/#portfolio]"
+- "Learn more about pricing? [BUTTON:View Pricing Plans|https://oneupai.com/#pricing]"
+- "Check out our templates? [BUTTON:Browse Templates|https://oneupai.com/#templates]"
 - "Questions about your specific industry? I'm here to help!"
+
+## When to use buttons:
+- Always include a button when mentioning dashboard.oneupai.com/onboard
+- Use buttons for any direct links to OneUpAI pages
+- Include buttons for demos, pricing, templates, or signup flows
+- Keep button text action-oriented and concise (max 4-5 words)
 
 ## Handle off-topic questions by:
 1. Politely acknowledging their question

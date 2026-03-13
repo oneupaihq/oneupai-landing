@@ -3,10 +3,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
-import { X, Send, Loader2 } from 'lucide-react';
+import { X, Send, Loader2, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from './button';
+import { parseMessageWithButtons, MessagePart } from '@/lib/chat-utils';
 
 const suggestedQuestions = [
   "How quickly can OneUpAI build my website?",
@@ -40,7 +41,7 @@ export function ChatBot() {
           parts: [
             {
               type: 'text',
-              text: "Hi there! 👋 I'm here to help you discover how OneUpAI can build your professional website in under 5 minutes. Ask me about our pricing, features, or how we can help grow your business! 🚀",
+              text: "Hi there! 👋 I'm here to help you discover how OneUpAI can build your professional website in under 5 minutes. Ask me about our pricing, features, or how we can help grow your business! 🚀\n\n[BUTTON:Get Started Now|https://dashboard.oneupai.com/onboard]",
             }
           ]
         }
@@ -80,6 +81,40 @@ export function ChatBot() {
 
   const isLoading = status === 'streaming';
   const hasUserMessages = messages.some(m => m.role === 'user');
+
+  // Function to render message content with buttons
+  const renderMessageContent = (text: string) => {
+    const parts = parseMessageWithButtons(text);
+    
+    return (
+      <div className="space-y-2">
+        {parts.map((part, index) => {
+          if (part.type === 'button' && part.url) {
+            return (
+              <div key={index} className="pt-2">
+                <a
+                  href={part.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-[#1A80E7] to-[#00C48C] text-white px-4 py-2 rounded-full text-sm font-medium hover:shadow-lg transition-all duration-200 hover:scale-105"
+                  style={{ textDecoration: 'none' }}
+                >
+                  {part.content}
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              </div>
+            );
+          }
+          
+          return (
+            <span key={index} className="whitespace-pre-wrap">
+              {part.content}
+            </span>
+          );
+        })}
+      </div>
+    );
+  };
 
   return (
     <>
@@ -141,11 +176,19 @@ export function ChatBot() {
                         : 'bg-[#2AA8D71A] border border-[#0000001A] bg-[#f1f5f9] text-[#1E293B] rounded-bl-[4px]'
                     )}
                   >
-                    <p className="whitespace-pre-wrap">
-                      {message.parts?.map((part, index) => 
-                        part.type === 'text' ? part.text : ''
-                      ).join('') || ''}
-                    </p>
+                    {message.role === 'user' ? (
+                      <p className="whitespace-pre-wrap">
+                        {message.parts?.map((part, index) => 
+                          part.type === 'text' ? part.text : ''
+                        ).join('') || ''}
+                      </p>
+                    ) : (
+                      renderMessageContent(
+                        message.parts?.map((part, index) => 
+                          part.type === 'text' ? part.text : ''
+                        ).join('') || ''
+                      )
+                    )}
                   </div>
                 </motion.div>
               ))}

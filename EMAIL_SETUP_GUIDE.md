@@ -1,6 +1,6 @@
-# 📧 Gmail SMTP Setup Guide for OneUpAI Forms
+# Gmail SMTP Setup Guide for OneUpAI Forms
 
-## 🚀 Quick Setup
+## Quick Setup
 
 ### 1. **Gmail App Password Setup**
 
@@ -34,9 +34,9 @@ CONTACT_EMAIL=your-email@gmail.com
 3. Fill out the form and submit
 4. Check your Gmail inbox for the form submission
 
-## 📋 **What's Implemented**
+## What's Implemented
 
-### ✅ **Email Features**
+### Email Features
 - **Community Signup Forms** → Sends formatted email with user details
 - **Sales Inquiry Forms** → Sends detailed email with message content
 - **Professional Email Templates** with OneUpAI branding
@@ -44,18 +44,18 @@ CONTACT_EMAIL=your-email@gmail.com
 - **Loading States** with spinner animations
 - **Success Confirmations** with auto-close
 
-### ✅ **API Endpoints**
+### API Endpoints
 - `POST /api/contact` - Handles all form submissions
 - Validates email format and required fields
 - Supports both community and sales form types
 
-### ✅ **Security Features**
+### Security Features
 - Input validation and sanitization
 - Rate limiting ready (can be added)
 - Secure Gmail SMTP with App Passwords
 - Error messages don't expose sensitive info
 
-## 🔧 **Configuration Options**
+## Configuration Options
 
 ### **Multiple Recipients**
 ```bash
@@ -77,28 +77,28 @@ Current form types in `FormPopup.tsx`:
 - `community` - Name + Email only
 - `sales` - Name + Email + Message
 
-## 🚨 **Troubleshooting**
+## Troubleshooting
 
 ### **Common Issues:**
 
 1. **"Authentication failed"**
-   - ✅ Ensure 2FA is enabled on Gmail
-   - ✅ Use App Password, not regular password
-   - ✅ Check GMAIL_USER matches the account with App Password
+   - Ensure 2FA is enabled on Gmail
+   - Use App Password, not regular password
+   - Check GMAIL_USER matches the account with App Password
 
 2. **"Email configuration missing"**
-   - ✅ Verify `.env.local` file exists
-   - ✅ Check environment variable names match exactly
-   - ✅ Restart development server after adding variables
+   - Verify `.env.local` file exists
+   - Check environment variable names match exactly
+   - Restart development server after adding variables
 
 3. **"Invalid email format"**
-   - ✅ Form validates email client-side and server-side
-   - ✅ Check email regex in `lib/email.ts`
+   - Form validates email client-side and server-side
+   - Check email regex in `lib/email.ts`
 
 4. **Forms not submitting**
-   - ✅ Check browser console for JavaScript errors
-   - ✅ Verify API route is accessible at `/api/contact`
-   - ✅ Check network tab for failed requests
+   - Check browser console for JavaScript errors
+   - Verify API route is accessible at `/api/contact`
+   - Check network tab for failed requests
 
 ### **Testing Commands:**
 ```bash
@@ -110,7 +110,7 @@ npm run dev
 node -e "console.log(process.env.GMAIL_USER)"
 ```
 
-## 📧 **Email Templates Preview**
+## Email Templates Preview
 
 ### **Community Signup Email:**
 ```
@@ -124,19 +124,19 @@ Subject: New Sales Inquiry - OneUpAI
 Content: Name, Email, Message, Timestamp
 ```
 
-## 🔒 **Security Best Practices**
+## Security Best Practices
 
-1. **Never commit `.env.local`** to git (already in .gitignore)
+1. **Keep environment files secure** (never commit to version control)
 2. **Use App Passwords** instead of regular Gmail passwords
 3. **Rotate App Passwords** periodically
 4. **Monitor email usage** for suspicious activity
 5. **Consider rate limiting** for production (add middleware)
 
-## 🚀 **Production Deployment**
+## Production Deployment
 
-### **Vercel:**
-1. Add environment variables in Vercel dashboard
-2. Deploy: `vercel --prod`
+### **Any Hosting Platform:**
+1. Add environment variables in your hosting platform's dashboard
+2. Deploy your application
 3. Test forms on production URL
 
 ### **Other Platforms:**
@@ -144,7 +144,7 @@ Content: Name, Email, Message, Timestamp
 2. Ensure Node.js version compatibility
 3. Test email functionality after deployment
 
-## 📞 **Support**
+## Support
 
 If you encounter issues:
 1. Check this guide first
@@ -154,4 +154,4 @@ If you encounter issues:
 
 ---
 
-**✅ Setup Complete!** Your OneUpAI forms now send professional emails via Gmail SMTP.
+**Setup Complete!** Your OneUpAI forms now send professional emails via Gmail SMTP.

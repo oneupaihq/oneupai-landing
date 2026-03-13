@@ -16,7 +16,7 @@ A modern Next.js 16 landing page for OneUpai, an AI-powered learning platform de
 - **React 19** with automatic JSX runtime
 - **TypeScript** for type safety with enhanced configuration
 - **Tailwind CSS** with modern design system and CSS variables
-- **AI Chatbot** - Intelligent assistant powered by Vercel AI SDK and OpenAI GPT-4o-mini
+- **AI Chatbot** - Intelligent assistant powered by AI SDK and OpenAI GPT-4o-mini
 - **Responsive Design** - Mobile-first approach with optimized images
 - **Figma Integration** - Direct asset loading with modern image formats
 - **Performance Optimized** - Cache Components, bundle splitting, lazy loading
@@ -27,7 +27,7 @@ A modern Next.js 16 landing page for OneUpai, an AI-powered learning platform de
 ## 🤖 AI Chatbot Features
 
 - **Intelligent Responses**: Trained specifically on OneUpAI's services and offerings
-- **Real-time Streaming**: Smooth, streaming responses using Vercel AI SDK
+- **Real-time Streaming**: Smooth, streaming responses using AI SDK
 - **Suggested Questions**: Pre-built questions to help users get started
 - **Error Handling**: Graceful error handling with user-friendly messages
 - **Responsive Design**: Works perfectly on mobile and desktop devices
@@ -40,7 +40,7 @@ A modern Next.js 16 landing page for OneUpai, an AI-powered learning platform de
 - **Runtime:** React 19.2.3
 - **Language:** TypeScript 5.6.3
 - **Styling:** Tailwind CSS 3.4.17 with CSS variables
-- **AI:** Vercel AI SDK with OpenAI GPT-4o-mini
+- **AI:** AI SDK with OpenAI GPT-4o-mini
 - **UI Components:** Radix UI with custom design system
 - **Animations:** Framer Motion + CSS animations
 - **Forms:** React Hook Form with Zod validation
@@ -159,11 +159,13 @@ The project uses a modern design system with:
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
+### Production Deployment
 ```bash
 npm run build
+npm start
 ```
-Deploy to Vercel with automatic Turbopack optimization.
+
+Deploy to your preferred hosting platform with Node.js support.
 
 ### Other Platforms
 ```bash

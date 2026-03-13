@@ -14,7 +14,7 @@ const createTransporter = () => {
 // Email templates
 export const emailTemplates = {
   communitySignup: (data: { name: string; email: string }) => ({
-    subject: 'New Community Member - OneUpAI 🎉',
+    subject: 'New Community Member - OneUpAI',
     html: `
       <!DOCTYPE html>
       <html lang="en">
@@ -30,10 +30,7 @@ export const emailTemplates = {
             
             <!-- Header -->
             <div style="background: white; padding: 30px 30px 20px; text-align: center; border-bottom: 1px solid #f1f5f9;">
-              <img src="https://oneupai.com/images/logo.svg" alt="OneUpAI" style="height: 40px; width: auto; margin-bottom: 20px;">
-              <div style="background: linear-gradient(135deg, #00C48C 0%, #1A80E7 100%); width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center;">
-                <span style="font-size: 24px;">👥</span>
-              </div>
+              <img src="https://oneupai.com/images/logo.svg" alt="OneUpAI" style="height: 40px; width: auto; margin-bottom: 30px;">
               <h1 style="color: #1e293b; margin: 0; font-size: 24px; font-weight: 600;">New Community Member</h1>
               <p style="color: #64748b; margin: 8px 0 0; font-size: 16px; font-weight: 400;">Someone just joined your community</p>
             </div>
@@ -46,38 +43,23 @@ export const emailTemplates = {
                 <h3 style="color: #1e293b; margin: 0 0 20px; font-size: 18px; font-weight: 600;">Member Details</h3>
                 
                 <div style="margin-bottom: 16px;">
-                  <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #1A80E7 0%, #00C48C 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                      <span style="color: white; font-size: 16px;">👤</span>
-                    </div>
-                    <div>
-                      <h4 style="color: #1e293b; margin: 0 0 2px; font-size: 16px; font-weight: 600;">${data.name}</h4>
-                      <p style="color: #64748b; margin: 0; font-size: 14px;">New community member</p>
-                    </div>
+                  <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">Name</h4>
+                    <p style="color: #64748b; margin: 0; font-size: 15px;">${data.name}</p>
                   </div>
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                  <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                      <span style="color: white; font-size: 16px;">📧</span>
-                    </div>
-                    <div>
-                      <h4 style="color: #1e293b; margin: 0 0 2px; font-size: 16px; font-weight: 600;">${data.email}</h4>
-                      <p style="color: #64748b; margin: 0; font-size: 14px;">Contact email</p>
-                    </div>
+                  <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">Email</h4>
+                    <p style="color: #64748b; margin: 0; font-size: 15px;">${data.email}</p>
                   </div>
                 </div>
 
                 <div>
-                  <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                      <span style="color: white; font-size: 16px;">⏰</span>
-                    </div>
-                    <div>
-                      <h4 style="color: #1e293b; margin: 0 0 2px; font-size: 16px; font-weight: 600;">${new Date().toLocaleString()}</h4>
-                      <p style="color: #64748b; margin: 0; font-size: 14px;">Signup time</p>
-                    </div>
+                  <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">Signup Time</h4>
+                    <p style="color: #64748b; margin: 0; font-size: 15px;">${new Date().toLocaleString()}</p>
                   </div>
                 </div>
               </div>
@@ -94,7 +76,7 @@ export const emailTemplates = {
               <!-- Stats -->
               <div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center; border: 1px solid #e2e8f0;">
                 <p style="color: #64748b; margin: 0; font-size: 14px;">
-                  🎉 <strong>Community Growth:</strong> Keep building your audience with valuable content!
+                  <strong>Community Growth:</strong> Keep building your audience with valuable content!
                 </p>
               </div>
             </div>
@@ -113,7 +95,7 @@ export const emailTemplates = {
   }),
   
   salesInquiry: (data: { name: string; email: string; message: string }) => ({
-    subject: 'New Sales Inquiry - OneUpAI 💼',
+    subject: 'New Sales Inquiry - OneUpAI',
     html: `
       <!DOCTYPE html>
       <html lang="en">
@@ -129,10 +111,7 @@ export const emailTemplates = {
             
             <!-- Header -->
             <div style="background: white; padding: 30px 30px 20px; text-align: center; border-bottom: 1px solid #f1f5f9;">
-              <img src="https://oneupai.com/images/logo.svg" alt="OneUpAI" style="height: 40px; width: auto; margin-bottom: 20px;">
-              <div style="background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%); width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center;">
-                <span style="font-size: 24px;">💼</span>
-              </div>
+              <img src="https://oneupai.com/images/logo.svg" alt="OneUpAI" style="height: 40px; width: auto; margin-bottom: 30px;">
               <h1 style="color: #1e293b; margin: 0; font-size: 24px; font-weight: 600;">New Sales Inquiry</h1>
               <p style="color: #64748b; margin: 8px 0 0; font-size: 16px; font-weight: 400;">A potential customer wants to talk</p>
             </div>
@@ -145,38 +124,23 @@ export const emailTemplates = {
                 <h3 style="color: #1e293b; margin: 0 0 20px; font-size: 18px; font-weight: 600;">Prospect Details</h3>
                 
                 <div style="margin-bottom: 16px;">
-                  <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #1A80E7 0%, #00C48C 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                      <span style="color: white; font-size: 16px;">👤</span>
-                    </div>
-                    <div>
-                      <h4 style="color: #1e293b; margin: 0 0 2px; font-size: 16px; font-weight: 600;">${data.name}</h4>
-                      <p style="color: #64748b; margin: 0; font-size: 14px;">Potential customer</p>
-                    </div>
+                  <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">Name</h4>
+                    <p style="color: #64748b; margin: 0; font-size: 15px;">${data.name}</p>
                   </div>
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                  <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                      <span style="color: white; font-size: 16px;">📧</span>
-                    </div>
-                    <div>
-                      <h4 style="color: #1e293b; margin: 0 0 2px; font-size: 16px; font-weight: 600;">${data.email}</h4>
-                      <p style="color: #64748b; margin: 0; font-size: 14px;">Contact email</p>
-                    </div>
+                  <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">Email</h4>
+                    <p style="color: #64748b; margin: 0; font-size: 15px;">${data.email}</p>
                   </div>
                 </div>
 
                 <div>
-                  <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                      <span style="color: white; font-size: 16px;">⏰</span>
-                    </div>
-                    <div>
-                      <h4 style="color: #1e293b; margin: 0 0 2px; font-size: 16px; font-weight: 600;">${new Date().toLocaleString()}</h4>
-                      <p style="color: #64748b; margin: 0; font-size: 14px;">Inquiry time</p>
-                    </div>
+                  <div style="padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">Inquiry Time</h4>
+                    <p style="color: #64748b; margin: 0; font-size: 15px;">${new Date().toLocaleString()}</p>
                   </div>
                 </div>
               </div>
@@ -203,7 +167,7 @@ export const emailTemplates = {
 
               <!-- Priority Alert -->
               <div style="background: #fef3c7; padding: 20px; border-radius: 12px; margin: 24px 0; text-align: center; border: 2px solid #f59e0b;">
-                <h4 style="color: #92400e; margin: 0 0 8px; font-size: 16px; font-weight: 600;">🔥 High Priority Lead</h4>
+                <h4 style="color: #92400e; margin: 0 0 8px; font-size: 16px; font-weight: 600;">High Priority Lead</h4>
                 <p style="color: #92400e; margin: 0; font-size: 14px; line-height: 1.5;">
                   <strong>Recommended Response Time:</strong> Within 2 hours for best conversion rates.
                 </p>
@@ -212,7 +176,7 @@ export const emailTemplates = {
               <!-- Lead Source -->
               <div style="background: #f8fafc; padding: 16px; border-radius: 8px; text-align: center; border: 1px solid #e2e8f0;">
                 <p style="color: #64748b; margin: 0; font-size: 14px;">
-                  📊 <strong>Lead Source:</strong> OneUpAI Landing Page Contact Form
+                  <strong>Lead Source:</strong> OneUpAI Landing Page Contact Form
                 </p>
               </div>
             </div>
@@ -232,7 +196,7 @@ export const emailTemplates = {
 
   // User confirmation templates
   communityConfirmation: (data: { name: string; email: string }) => ({
-    subject: 'Welcome to the OneUpAI Community! 🎉',
+    subject: 'Welcome to the OneUpAI Community!',
     html: `
       <!DOCTYPE html>
       <html lang="en">
@@ -249,9 +213,6 @@ export const emailTemplates = {
             <!-- Header -->
             <div style="background: white; padding: 40px 30px 30px; text-align: center; border-bottom: 1px solid #f1f5f9;">
               <img src="https://oneupai.com/images/logo.svg" alt="OneUpAI" style="height: 40px; width: auto; margin-bottom: 30px;">
-              <div style="background: linear-gradient(135deg, #1A80E7 0%, #00C48C 100%); width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
-                <span style="font-size: 32px;">🎉</span>
-              </div>
               <h1 style="color: #1e293b; margin: 0; font-size: 28px; font-weight: 600;">Welcome to OneUpAI!</h1>
               <p style="color: #64748b; margin: 12px 0 0; font-size: 18px; font-weight: 400;">Hi ${data.name}, you're now part of something amazing!</p>
             </div>
@@ -261,7 +222,7 @@ export const emailTemplates = {
               
               <!-- Welcome Message -->
               <div style="text-align: center; margin-bottom: 32px;">
-                <h2 style="color: #1e293b; margin: 0 0 12px; font-size: 22px; font-weight: 600;">🚀 You're In!</h2>
+                <h2 style="color: #1e293b; margin: 0 0 12px; font-size: 22px; font-weight: 600;">You're In!</h2>
                 <p style="color: #64748b; margin: 0; font-size: 16px; line-height: 1.6;">Thanks for joining thousands of business owners who are using AI to grow faster and work smarter.</p>
               </div>
 
@@ -270,50 +231,30 @@ export const emailTemplates = {
                 <h3 style="color: #1e293b; margin: 0 0 24px; font-size: 20px; font-weight: 600; text-align: center;">Here's what you'll get:</h3>
                 
                 <div style="margin-bottom: 16px;">
-                  <div style="display: flex; align-items: center; gap: 16px;">
-                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #1A80E7 0%, #00C48C 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                      <span style="color: white; font-size: 20px;">📧</span>
-                    </div>
-                    <div>
-                      <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">Weekly AI Tips</h4>
-                      <p style="color: #64748b; margin: 0; font-size: 14px; line-height: 1.5;">Actionable strategies to grow your business with AI</p>
-                    </div>
+                  <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">Weekly AI Tips</h4>
+                    <p style="color: #64748b; margin: 0; font-size: 14px; line-height: 1.5;">Actionable strategies to grow your business with AI</p>
                   </div>
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                  <div style="display: flex; align-items: center; gap: 16px;">
-                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #1A80E7 0%, #00C48C 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                      <span style="color: white; font-size: 20px;">🎨</span>
-                    </div>
-                    <div>
-                      <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">Free Templates</h4>
-                      <p style="color: #64748b; margin: 0; font-size: 14px; line-height: 1.5;">Professional website templates and resources</p>
-                    </div>
+                  <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">Free Templates</h4>
+                    <p style="color: #64748b; margin: 0; font-size: 14px; line-height: 1.5;">Professional website templates and resources</p>
                   </div>
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                  <div style="display: flex; align-items: center; gap: 16px;">
-                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #1A80E7 0%, #00C48C 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                      <span style="color: white; font-size: 20px;">⚡</span>
-                    </div>
-                    <div>
-                      <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">Early Access</h4>
-                      <p style="color: #64748b; margin: 0; font-size: 14px; line-height: 1.5;">Be first to try new OneUpAI features</p>
-                    </div>
+                  <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">Early Access</h4>
+                    <p style="color: #64748b; margin: 0; font-size: 14px; line-height: 1.5;">Be first to try new OneUpAI features</p>
                   </div>
                 </div>
 
                 <div>
-                  <div style="display: flex; align-items: center; gap: 16px;">
-                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #1A80E7 0%, #00C48C 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                      <span style="color: white; font-size: 20px;">🎯</span>
-                    </div>
-                    <div>
-                      <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">Exclusive Events</h4>
-                      <p style="color: #64748b; margin: 0; font-size: 14px; line-height: 1.5;">Community webinars and networking opportunities</p>
-                    </div>
+                  <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">Exclusive Events</h4>
+                    <p style="color: #64748b; margin: 0; font-size: 14px; line-height: 1.5;">Community webinars and networking opportunities</p>
                   </div>
                 </div>
               </div>
@@ -321,7 +262,7 @@ export const emailTemplates = {
               <!-- CTA Button -->
               <div style="text-align: center; margin: 32px 0;">
                 <a href="https://dashboard.oneupai.com/onboard" style="display: inline-block; background: linear-gradient(135deg, #1A80E7 0%, #00C48C 100%); color: white; padding: 16px 32px; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 16px rgba(26, 128, 231, 0.3);">
-                  🚀 Get Started with OneUpAI
+                  Get Started with OneUpAI
                 </a>
               </div>
 
@@ -351,9 +292,8 @@ export const emailTemplates = {
       </html>
     `,
   }),
-
   salesConfirmation: (data: { name: string; email: string; message: string }) => ({
-    subject: 'Thanks for reaching out! We\'ll be in touch soon 📞',
+    subject: 'Thanks for reaching out! We\'ll be in touch soon',
     html: `
       <!DOCTYPE html>
       <html lang="en">
@@ -370,9 +310,6 @@ export const emailTemplates = {
             <!-- Header -->
             <div style="background: white; padding: 40px 30px 30px; text-align: center; border-bottom: 1px solid #f1f5f9;">
               <img src="https://oneupai.com/images/logo.svg" alt="OneUpAI" style="height: 40px; width: auto; margin-bottom: 30px;">
-              <div style="background: linear-gradient(135deg, #1A80E7 0%, #00C48C 100%); width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
-                <span style="font-size: 32px;">📞</span>
-              </div>
               <h1 style="color: #1e293b; margin: 0; font-size: 28px; font-weight: 600;">Message Received!</h1>
               <p style="color: #64748b; margin: 12px 0 0; font-size: 18px; font-weight: 400;">Hi ${data.name}, thanks for reaching out!</p>
             </div>
@@ -382,7 +319,7 @@ export const emailTemplates = {
               
               <!-- Confirmation Message -->
               <div style="background: #f0f9ff; padding: 24px; border-radius: 12px; margin-bottom: 24px; border-left: 4px solid #1A80E7;">
-                <h3 style="color: #1e293b; margin: 0 0 16px; font-size: 18px; font-weight: 600;">✅ Your message has been received</h3>
+                <h3 style="color: #1e293b; margin: 0 0 16px; font-size: 18px; font-weight: 600;">Your message has been received</h3>
                 <div style="background: white; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
                   <p style="color: #64748b; margin: 0 0 8px; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Your Message:</p>
                   <p style="color: #1e293b; margin: 0; font-size: 15px; line-height: 1.6; font-style: italic;">"${data.message}"</p>
@@ -391,7 +328,7 @@ export const emailTemplates = {
 
               <!-- Timeline -->
               <div style="background: linear-gradient(135deg, #1A80E7 0%, #00C48C 100%); padding: 24px; border-radius: 12px; margin: 24px 0; text-align: center;">
-                <h2 style="color: white; margin: 0 0 12px; font-size: 20px; font-weight: 600;">⏰ What happens next?</h2>
+                <h2 style="color: white; margin: 0 0 12px; font-size: 20px; font-weight: 600;">What happens next?</h2>
                 <p style="color: rgba(255,255,255,0.95); margin: 0; font-size: 16px; line-height: 1.6;">Our team will review your message and get back to you <strong>within a few hours</strong> to schedule a call and discuss how OneUpAI can help your business grow.</p>
               </div>
 
@@ -400,54 +337,39 @@ export const emailTemplates = {
                 <h3 style="color: #1e293b; margin: 0 0 24px; font-size: 20px; font-weight: 600; text-align: center;">While you wait, check these out:</h3>
                 
                 <div style="margin-bottom: 16px;">
-                  <div style="display: flex; align-items: center; gap: 16px;">
-                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                      <span style="color: white; font-size: 20px;">📚</span>
-                    </div>
-                    <div>
-                      <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">
-                        <a href="https://oneupai.com/blog" style="color: #1A80E7; text-decoration: none;">Read Our Blog</a>
-                      </h4>
-                      <p style="color: #64748b; margin: 0; font-size: 14px; line-height: 1.5;">AI business tips and growth strategies</p>
-                    </div>
+                  <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">
+                      <a href="https://oneupai.com/blog" style="color: #1A80E7; text-decoration: none;">Read Our Blog</a>
+                    </h4>
+                    <p style="color: #64748b; margin: 0; font-size: 14px; line-height: 1.5;">AI business tips and growth strategies</p>
                   </div>
                 </div>
 
                 <div style="margin-bottom: 16px;">
-                  <div style="display: flex; align-items: center; gap: 16px;">
-                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                      <span style="color: white; font-size: 20px;">🎨</span>
-                    </div>
-                    <div>
-                      <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">
-                        <a href="https://oneupai.com/#portfolio" style="color: #1A80E7; text-decoration: none;">Browse Templates</a>
-                      </h4>
-                      <p style="color: #64748b; margin: 0; font-size: 14px; line-height: 1.5;">See our AI-powered website designs</p>
-                    </div>
+                  <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">
+                      <a href="https://oneupai.com/#portfolio" style="color: #1A80E7; text-decoration: none;">Browse Templates</a>
+                    </h4>
+                    <p style="color: #64748b; margin: 0; font-size: 14px; line-height: 1.5;">See our AI-powered website designs</p>
                   </div>
                 </div>
 
                 <div>
-                  <div style="display: flex; align-items: center; gap: 16px;">
-                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                      <span style="color: white; font-size: 20px;">👥</span>
-                    </div>
-                    <div>
-                      <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">
-                        <a href="https://oneupai.com/#community" style="color: #1A80E7; text-decoration: none;">Join Community</a>
-                      </h4>
-                      <p style="color: #64748b; margin: 0; font-size: 14px; line-height: 1.5;">Connect with other business owners</p>
-                    </div>
+                  <div style="padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: #1e293b; margin: 0 0 4px; font-size: 16px; font-weight: 600;">
+                      <a href="https://oneupai.com/#community" style="color: #1A80E7; text-decoration: none;">Join Community</a>
+                    </h4>
+                    <p style="color: #64748b; margin: 0; font-size: 14px; line-height: 1.5;">Connect with other business owners</p>
                   </div>
                 </div>
               </div>
 
               <!-- Urgent Contact -->
               <div style="background: #fef3c7; padding: 20px; border-radius: 12px; margin: 24px 0; text-align: center; border: 2px solid #f59e0b;">
-                <h4 style="color: #92400e; margin: 0 0 8px; font-size: 18px; font-weight: 600;">🔥 Need to talk right now?</h4>
+                <h4 style="color: #92400e; margin: 0 0 8px; font-size: 18px; font-weight: 600;">Need to talk right now?</h4>
                 <p style="color: #92400e; margin: 0 0 12px; font-size: 14px;">Don't wait - call us directly!</p>
                 <a href="tel:+18336638724" style="display: inline-block; background: #f59e0b; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                  📞 1-833-ONEUPAI (663-8724)
+                  1-833-ONEUPAI (663-8724)
                 </a>
               </div>
 
