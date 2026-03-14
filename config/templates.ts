@@ -15,7 +15,7 @@ export const templates: TemplateConfig[] = [
   },
   {
     name: "lawncare-ai-website-template",
-    url: "https://lawncare.oneupai.com",
+    url: "https://lawn.oneupai.com",
   },
   {
     name: "movers-ai-website-template",
