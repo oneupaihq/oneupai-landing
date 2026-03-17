@@ -67,15 +67,14 @@ function getCacheKey(messages: any[]): string {
     messageText = lastUserMessage.content;
   }
   
-  if (!messageText) return '';
+  if (!messageText || messageText.trim().length < 3) return ''; // Require at least 3 characters
   
-  // Enhanced normalization for better cache hits
+  // Normalize for better cache hits while preserving key words
   return messageText
     .toLowerCase()
     .trim()
     .replace(/[^\w\s]/g, '') // Remove punctuation
     .replace(/\s+/g, ' ') // Normalize whitespace
-    .replace(/\b(what|how|do|does|can|will|would|should|could|is|are|the|a|an)\b/g, '') // Remove common words
     .trim();
 }
 
@@ -116,6 +115,7 @@ export async function POST(req: NextRequest) {
     // Rate limiting
     const clientIP = getClientIP(req);
     if (isRateLimited(clientIP)) {
+      console.log(`[Chat] Rate limited for IP: ${clientIP}`);
       return new Response(
         JSON.stringify({ error: 'Too many requests. Please wait a moment before trying again.' }),
         { status: 429, headers: { 'Content-Type': 'application/json' } }
@@ -126,11 +126,16 @@ export async function POST(req: NextRequest) {
 
     // Input validation
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      console.log('[Chat] Invalid request format');
       return new Response(
         JSON.stringify({ error: 'Invalid request format' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
+
+    // Log incoming message for debugging
+    const lastMessage = messages[messages.length - 1];
+    console.log(`[Chat] Received message from ${clientIP}: ${lastMessage?.content?.substring(0, 50) || 'unknown'}`);
 
     // Optimize conversation history to reduce token usage
     const recentMessages = messages.slice(-6); // Increased to 6 messages (3 exchanges) for better context
@@ -140,6 +145,7 @@ export async function POST(req: NextRequest) {
     const cachedResponse = getCachedResponse(cacheKey);
     
     if (cachedResponse) {
+      console.log(`[Chat] Cache hit for key: ${cacheKey.substring(0, 30)}...`);
       // Return cached response as a stream-like format
       return new Response(
         `data: {"content":"${cachedResponse.replace(/"/g, '\\"')}"}\n\ndata: [DONE]\n\n`,
@@ -213,6 +219,7 @@ Remember: Every interaction is an opportunity to show how OneUpAI creates profes
         // Cache the response for future use
         if (result.text && cacheKey) {
           setCachedResponse(cacheKey, result.text);
+          console.log(`[Chat] Response cached for key: ${cacheKey.substring(0, 30)}...`);
         }
         
         // Optional: Log usage for cost monitoring (only in development)
@@ -231,7 +238,7 @@ Remember: Every interaction is an opportunity to show how OneUpAI creates profes
     });
 
   } catch (error) {
-    console.error('Chat API Error:', error);
+    console.error('[Chat API Error]:', error);
     
     return new Response(
       JSON.stringify({ 
