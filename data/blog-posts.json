@@ -1,0 +1,62 @@
+[
+  {
+    "id": "1",
+    "title": "How to Launch an AI-Powered Website for Your Service Business in Under a Week",
+    "slug": "launch-ai-website-service-business",
+    "excerpt": "Step-by-step walkthrough of how SMB service businesses can go live with a professional, conversion-ready website using OneUpAI's industry templates.",
+    "content": "## Choose Your Industry Template\n\nOneUpAI offers specialized templates for different service industries. Whether you're running an HVAC company, cleaning service, or fitness coaching business, we have a template designed specifically for your needs.\n\n## Customize Your Content\n\nOnce you've selected your template, it's time to make it yours. Our AI assistant helps you customize:\n\n- Business name and contact information\n- Service descriptions and pricing\n- About section and team bios\n- Customer testimonials and case studies\n- Local SEO elements for your area\n\n## Set Up Your AI Chat Widget\n\nThis is where the magic happens. Your AI chat widget works 24/7 to:\n\n- Answer common questions about your services\n- Qualify leads based on their needs\n- Collect contact information\n- Schedule appointments directly to your calendar\n- Follow up with prospects automatically\n\n## Launch and Optimize\n\nWith your template customized and AI chat configured, you're ready to launch. Use OneUpAI's built-in analytics to track visitor behavior and optimize your site.",
+    "category": "Getting Started",
+    "date": "March 9, 2026",
+    "readTime": "8 min",
+    "author": {
+      "name": "Nick",
+      "title": "Founder, OneUpAI",
+      "avatar": "N"
+    },
+    "featured": true,
+    "published": true,
+    "createdAt": "2026-03-21T22:38:07.386Z",
+    "updatedAt": "2026-03-21T22:38:07.387Z"
+  },
+  {
+    "id": "2",
+    "title": "What Is an AI Chat Widget — and Why Every Service Business Needs One",
+    "slug": "ai-chat-widget-guide",
+    "excerpt": "Learn how an AI chat widget qualifies leads 24/7, answers FAQs, and routes hot prospects straight to your calendar.",
+    "content": "## What Is an AI Chat Widget?\n\nAn AI chat widget is an intelligent conversation tool that sits on your website, powered by artificial intelligence. Unlike basic chatbots that follow rigid scripts, AI chat widgets understand context, learn from interactions, and provide personalized responses.\n\n## Key Benefits for Service Businesses\n\n### Never Miss a Lead Again\n\nStudies show that 78% of customers buy from the first company that responds to their inquiry. With an AI chat widget, you're always first to respond — even at 2 AM on a Sunday.\n\n### Qualify Leads Automatically\n\nNot all leads are created equal. Your AI chat widget can ask qualifying questions to determine budget, timeline, and service needs before passing high-quality prospects to you.\n\n### Reduce Administrative Work\n\nStop playing phone tag. The AI chat widget handles initial inquiries, schedules appointments, and collects all necessary information before the prospect even talks to you.\n\n## How It Works Behind the Scenes\n\nModern AI chat widgets use natural language processing (NLP) to understand visitor intent and provide relevant responses. The typical flow includes greeting visitors, gathering information, qualifying leads, and scheduling next steps.",
+    "category": "AI Tools",
+    "date": "February 28, 2026",
+    "readTime": "7 min",
+    "author": {
+      "name": "Sarah",
+      "title": "Product Manager, OneUpAI",
+      "avatar": "S"
+    },
+    "featured": false,
+    "published": true,
+    "createdAt": "2026-03-21T22:38:07.387Z",
+    "updatedAt": "2026-03-21T22:54:43.665Z"
+  },
+  {
+    "title": "How things work",
+    "slug": "how-things-work",
+    "excerpt": "How things work around the globe.",
+    "content": "How things work around the globe.How things work around the globe.How things work around the globe.How things work around the globe.How things work around the globe.How things work around the globe.How things work around the globe.How things work around the globe.How things work around the globe.How things work around the globe.How things work around the globe.How things work around the globe.How things work around the globe.How things work around the globe.",
+    "category": "Industry Guides",
+    "readTime": "5 min",
+    "authorName": "Nick",
+    "authorTitle": "Founder, OneUpAI",
+    "authorAvatar": "N",
+    "featured": true,
+    "published": true,
+    "date": "March 22, 2026",
+    "author": {
+      "name": "Nick",
+      "title": "Founder, OneUpAI",
+      "avatar": "N"
+    },
+    "id": "1774134025323",
+    "createdAt": "2026-03-21T23:00:25.323Z",
+    "updatedAt": "2026-03-21T23:00:42.481Z"
+  }
+]

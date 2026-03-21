@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "type-check": "tsc --noEmit",
-    "clean": "rm -rf .next out dist"
+    "clean": "rm -rf .next out dist",
+    "init-blog": "node scripts/init-blog.js"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.58",
@@ -43,6 +44,7 @@
     "@radix-ui/react-tooltip": "^1.2.0",
     "@tanstack/react-query": "^5.60.5",
     "@types/nodemailer": "^7.0.11",
+    "@upstash/redis": "^1.37.0",
     "ai": "^6.0.116",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -57,6 +59,7 @@
     "react-dom": "^19.2.3",
     "react-hook-form": "^7.55.0",
     "react-icons": "^5.4.0",
+    "react-markdown": "^10.1.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.24.2"

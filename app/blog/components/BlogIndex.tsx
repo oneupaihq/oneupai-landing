@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, ArrowRight, Layers, ChevronRight } from 'lucide-react';
 
@@ -16,100 +16,49 @@ const categories = [
   'Industry Guides'
 ];
 
-const blogPosts = [
-  {
-    id: 1,
-    title: '5 OneUpAI Templates That Book More Clients on Autopilot',
-    excerpt: 'A deep dive into our top-performing industry templates and the AI features that turn website visitors into booked appointments.',
-    category: 'Templates',
-    date: 'Mar 5, 2026',
-    readTime: '6 min',
-    href: '/blog/oneupai-templates-autopilot'
-  },
-  {
-    id: 2,
-    title: 'What Is an AI Chat Widget — and Why Every Service Business Needs One',
-    excerpt: 'Learn how an AI chat widget qualifies leads 24/7, answers FAQs, and routes hot prospects straight to your calendar.',
-    category: 'AI Tools',
-    date: 'Feb 28, 2026',
-    readTime: '7 min',
-    href: '/blog/ai-chat-widget-guide'
-  },
-  {
-    id: 3,
-    title: 'Local SEO for Service Businesses: How to Rank #1 in Your City',
-    excerpt: 'Practical local SEO tactics — keyword strategy, Google Business Profile, schema markup, and more for service businesses.',
-    category: 'SEO',
-    date: 'Feb 20, 2026',
-    readTime: '9 min',
-    href: '/blog/local-seo-service-businesses'
-  },
-  {
-    id: 4,
-    title: 'From Inquiry to Invoice: Automating Your Client Workflow with AI',
-    excerpt: 'Map the full client journey — lead capture, follow-up, booking, contract, and payment — and automate each step.',
-    category: 'Automation',
-    date: 'Feb 14, 2026',
-    readTime: '10 min',
-    href: '/blog/automate-client-workflow'
-  },
-  {
-    id: 5,
-    title: 'How to Write Website Copy That Converts Visitors Into Paying Customers',
-    excerpt: 'Copywriting frameworks — PAS, AIDA, and social proof strategies — tailored for HVAC, cleaning, and contractor businesses.',
-    category: 'Marketing',
-    date: 'Feb 7, 2026',
-    readTime: '8 min',
-    href: '/blog/website-copy-converts'
-  },
-  {
-    id: 6,
-    title: 'Case Study: How a Cleaning Business Added $4K/Month with OneUpAI',
-    excerpt: 'Real numbers, real results. See how a residential cleaning company used OneUpAI\'s template and AI chat to grow recurring revenue.',
-    category: 'Case Studies',
-    date: 'Jan 30, 2026',
-    readTime: '5 min',
-    href: '/blog/cleaning-business-case-study'
-  }
-];
-
-const industryGuides = [
-  {
-    title: 'The Complete HVAC Business Website Guide: What to Include & Why',
-    excerpt: 'Everything an HVAC contractor needs on their website to rank locally and convert visitors into booked jobs.',
-    date: 'Jan 22, 2026',
-    readTime: '11 min',
-    href: '/blog/hvac-website-guide'
-  },
-  {
-    title: 'Personal Trainers: Build a Website That Sells Your Programs While You Sleep',
-    excerpt: 'A fitness-specific guide to online presence, booking automation, and using AI to follow up with prospects.',
-    date: 'Jan 15, 2026',
-    readTime: '8 min',
-    href: '/blog/personal-trainer-website'
-  },
-  {
-    title: 'Fractional Executives: Build an Authority Website That Attracts Premium Clients',
-    excerpt: 'Position yourself as the go-to expert with a polished web presence, case studies, and an AI-powered lead intake flow.',
-    date: 'Jan 8, 2026',
-    readTime: '9 min',
-    href: '/blog/fractional-executive-website'
-  },
-  {
-    title: 'Home Service Contractors: Stop Relying on Referrals — Build a Lead-Generating Website',
-    excerpt: 'How landscaping, plumbing, and electrical contractors can own their lead source and stop paying per-click forever.',
-    date: 'Jan 2, 2026',
-    readTime: '10 min',
-    href: '/blog/home-service-lead-generation'
-  }
-];
+interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  category: string;
+  date: string;
+  readTime: string;
+  featured: boolean;
+  author: {
+    name: string;
+    title: string;
+    avatar: string;
+  };
+}
 
 export default function BlogIndex() {
   const [activeCategory, setActiveCategory] = useState('All Posts');
   const [searchQuery, setSearchQuery] = useState('');
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch('/api/blog');
+      const data = await response.json();
+      setBlogPosts(data.posts || []);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const industryGuides = blogPosts.filter(post => post.category === 'Industry Guides');
 
   // Filter posts based on search query and active category
-  const filteredPosts = blogPosts.filter(post => {
+  const regularPosts = blogPosts.filter(post => post.category !== 'Industry Guides');
+  const filteredPosts = regularPosts.filter(post => {
     const matchesSearch = searchQuery === '' || 
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -128,6 +77,8 @@ export default function BlogIndex() {
       guide.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       guide.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
   });
+
+  const featuredPost = blogPosts.find(post => post.featured);
 
   // Handle search
   const handleSearch = () => {
@@ -163,7 +114,7 @@ export default function BlogIndex() {
           <li><Link href="/#features" className="text-sm font-medium text-[#64748b] hover:text-[#00244c] transition-colors">Features</Link></li>
           <li><Link href="/#pricing" className="text-sm font-medium text-[#64748b] hover:text-[#00244c] transition-colors">Pricing</Link></li>
           <li><Link href="/blog" className="text-sm font-semibold text-[#1a80e7] transition-colors">Blog</Link></li>
-          <li><Link href="#" className="text-sm font-medium text-[#64748b] hover:text-[#00244c] transition-colors">Docs</Link></li>
+          <li><Link href="/admin/blog" className="text-sm font-medium text-[#64748b] hover:text-[#00244c] transition-colors">Admin</Link></li>
           <li>
             <Link 
               href="https://dashboard.oneupai.com/onboard" 
@@ -262,8 +213,16 @@ export default function BlogIndex() {
 
       {/* Main Content */}
       <div className="max-w-[1200px] mx-auto mt-16 mb-20 px-12">
+        {/* Loading State */}
+        {loading && (
+          <div className="text-center py-16">
+            <div className="w-16 h-16 border-4 border-[#1a80e7] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-[#64748b]">Loading posts...</p>
+          </div>
+        )}
+
         {/* Featured Post - Only show when no search/filter is active */}
-        {!searchQuery && activeCategory === 'All Posts' && (
+        {!loading && !searchQuery && activeCategory === 'All Posts' && featuredPost && (
           <div className="grid grid-cols-1 lg:grid-cols-2 rounded-2xl overflow-hidden bg-white border border-[#e4eaf2] mb-16 hover:shadow-xl transition-shadow duration-300">
             <div className="min-h-[380px] flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-[#cdf5ed] to-[#d6ecff] relative overflow-hidden">
               <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-[rgba(65,230,191,0.25)] via-transparent to-[rgba(26,128,231,0.18)]" />
@@ -281,30 +240,30 @@ export default function BlogIndex() {
             <div className="p-8 lg:p-12 flex flex-col justify-center">
               <div className="flex gap-3 items-center mb-6 flex-wrap">
                 <span className="inline-block px-3 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase bg-[#00244c] text-[#41e6bf]">⭐ Featured</span>
-                <span className="inline-block px-3 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase bg-[rgba(26,128,231,0.1)] text-[#1a80e7]">Getting Started</span>
+                <span className="inline-block px-3 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase bg-[rgba(26,128,231,0.1)] text-[#1a80e7]">{featuredPost.category}</span>
               </div>
               
               <h2 className="text-2xl lg:text-3xl font-extrabold text-[#00244c] leading-tight tracking-tight mb-4">
-                How to Launch an AI-Powered Website for Your Service Business in Under a Week
+                {featuredPost.title}
               </h2>
               
               <p className="text-base text-[#64748b] leading-relaxed mb-8">
-                Step-by-step walkthrough of how SMB service businesses — from HVAC contractors to fitness coaches — can go live with a professional, conversion-ready website using OneUpAI's industry templates.
+                {featuredPost.excerpt}
               </p>
               
               <div className="flex items-center gap-3 text-sm text-[#64748b] mb-8">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#41e6bf] to-[#1a80e7] flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
-                  N
+                  {featuredPost.author.avatar}
                 </div>
-                <span>Nick · OneUpAI</span>
+                <span>{featuredPost.author.name} · {featuredPost.author.title}</span>
                 <div className="w-1 h-1 bg-[#c0ccd8] rounded-full" />
-                <span>March 9, 2026</span>
+                <span>{featuredPost.date}</span>
                 <div className="w-1 h-1 bg-[#c0ccd8] rounded-full" />
-                <span>8 min read</span>
+                <span>{featuredPost.readTime} read</span>
               </div>
               
               <Link 
-                href="/blog/launch-ai-website-service-business"
+                href={`/blog/${featuredPost.slug}`}
                 className="inline-flex items-center gap-2 text-sm font-semibold text-[#1a80e7] hover:gap-3 transition-all group"
               >
                 Read Article
@@ -351,7 +310,7 @@ export default function BlogIndex() {
         )}
 
         {/* Posts Grid */}
-        {filteredPosts.length > 0 && (
+        {!loading && filteredPosts.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
             {filteredPosts.map((post, index) => (
             <div key={post.id} className="bg-white border border-[#e4eaf2] rounded-2xl overflow-hidden flex flex-col hover:shadow-lg hover:-translate-y-1 transition-all">
@@ -393,7 +352,7 @@ export default function BlogIndex() {
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-[#64748b]">{post.date} · {post.readTime}</span>
                   <Link 
-                    href={post.href}
+                    href={`/blog/${post.slug}`}
                     className="text-sm font-semibold text-[#1a80e7] inline-flex items-center gap-1 hover:gap-2 transition-all"
                   >
                     Read <ArrowRight className="w-3 h-3" />
@@ -406,7 +365,7 @@ export default function BlogIndex() {
         )}
 
         {/* Industry Guides */}
-        {filteredIndustryGuides.length > 0 && (
+        {!loading && filteredIndustryGuides.length > 0 && (
           <>
             <div className="flex items-baseline justify-between mb-8">
               <h3 className="text-2xl font-bold text-[#00244c] tracking-tight">Industry Guides</h3>
