@@ -46,9 +46,12 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
+    console.log('[Blog API] Received POST request with body:', JSON.stringify(body, null, 2));
+    
     // Validate post data
     const validationErrors = validateBlogPost(body);
     if (validationErrors.length > 0) {
+      console.error('[Blog API] Validation failed:', validationErrors);
       return NextResponse.json(
         { error: 'Validation failed', errors: validationErrors },
         { status: 400 }

@@ -61,7 +61,9 @@ export default function NewBlogPost() {
       if (response.ok) {
         router.push('/admin/blog');
       } else {
-        alert('Failed to create post');
+        const errorData = await response.json();
+        console.error('Failed to create post:', errorData);
+        alert(`Failed to create post: ${errorData.error}\n${errorData.errors ? JSON.stringify(errorData.errors, null, 2) : ''}`);
       }
     } catch (error) {
       console.error('Error creating post:', error);

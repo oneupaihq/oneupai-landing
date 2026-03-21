@@ -60,7 +60,7 @@ export function validateBlogPost(post: Partial<BlogPost>): ValidationError[] {
   if (!post.author?.title || post.author.title.trim().length === 0) {
     errors.push({ field: 'author.title', message: 'Author title is required' });
   }
-  if (!post.author?.avatar || post.author.avatar.length !== 1) {
+  if (!post.author?.avatar || post.author.avatar.trim().length !== 1) {
     errors.push({ field: 'author.avatar', message: 'Author avatar must be a single character' });
   }
 
