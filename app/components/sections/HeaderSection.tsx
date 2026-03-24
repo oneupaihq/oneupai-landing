@@ -362,8 +362,8 @@ export default function HeaderSection() {
               </motion.span>
             </h1>
             <p className="max-w-[700px] ff-Graphik font-normal text-[#1E293B] md:text-xl text-base leading-[24px] mb-8 md:mb-9">
-              While you're busy with customers, your website is answering questions, 
-              taking deposits, and booking the next one. No designers. No tech headaches.
+              While you're busy with customers, your AI-ready website is answering questions, 
+              taking deposits, and running your social media. No designers. No tech headaches.
             </p>
           </div>
 
