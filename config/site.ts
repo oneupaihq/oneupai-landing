@@ -1,8 +1,8 @@
 import { SiteConfig } from "@/types"
 
 export const siteConfig: SiteConfig = {
-  name: "OneUpAI - AI Automation Built and Managed for You",
-  description: "AI automation, built and managed for you. Build your custom AI agent with OneUpAI.",
+  name: "AI Websites with Bookings, Social Media & Payments | OneUpAI",
+  description: "AI Websites with Bookings, Social Media & Payments | OneUpAI",
   url: "https://oneupai.com",
   ogImage: "https://oneupai.com/og.jpg",
   links: {

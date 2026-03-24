@@ -54,7 +54,7 @@ export default function PricingSection() {
       price: pricing.starter,
       period: "/mo",
       isPopular: false,
-      ctaText: "Start Free Trial",
+      ctaText: "Start Your 7-Day Free Trial",
       ctaType: "link" as const,
     },
     {
@@ -63,7 +63,7 @@ export default function PricingSection() {
       price: pricing.professional,
       period: "/mo",
       isPopular: true,
-      ctaText: "Start Free Trial",
+      ctaText: "Start Your 7-Day Free Trial",
       ctaType: "link" as const,
     },
     {
@@ -79,23 +79,22 @@ export default function PricingSection() {
 
   const planFeatures = [
     [
-      "Support for 1 AI Powered Website",
+      "7-Day Free Trial Included",
       "A professional AI-powered website live in minutes, not months",
       "AI assistant that qualifies visitors and captures leads around the clock with no human needed",
       "Online booking that fills your calendar automatically, up to 100 appointments/month",
       "Accept payments directly on your site and cut out the back-and-forth invoicing",
       "Two-way Google Calendar sync with zero double bookings and zero missed appointments",
-      "Hosting, SSL security, and a free domain bundled into one bill with nothing else to manage",
+      "30-day money back guarantee",
     ],
     [
-      "Everything in Launch, plus:",
-      "Support for 3 AI Powered Websites",
+      "7-Day Free Trial Included",
       "Train your AI on your actual docs, FAQs, and offers so it sells for you, not just answers",
       "Unlimited bookings to remove the ceiling on how much revenue your calendar can hold",
       "Publish across all your social media accounts from one place so you stay visible without the busywork",
       "Your brand front and center with the OneUpAI badge removed so it looks 100% yours",
       "Simple dashboard showing which pages, offers, and keywords are actually bringing in customers",
-      "Priority support so when something matters, you don't wait in a queue",
+      "30-day money back guarantee",
     ],
     [
       "Everything in Grow, plus:",

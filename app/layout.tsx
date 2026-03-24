@@ -22,8 +22,8 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "OneUpAI - AI Automation Built and Managed for You",
-  description: "AI automation, built and managed for you. Build your custom AI agent with OneUpAI.",
+  title: "AI Websites with Bookings, Social Media & Payments | OneUpAI",
+  description: "AI Websites with Bookings, Social Media & Payments | OneUpAI",
    icons: {
     icon: '/favicon.png',
     shortcut: '/favicon-16x16.png',
