@@ -68,6 +68,8 @@ const nextConfig = {
     ],
     // Add quality 90 to supported qualities
     qualities: [75, 90],
+    // Reduce memory usage in dev
+    minimumCacheTTL: 60,
   },
 
   // Security headers applied to all routes
@@ -90,6 +92,40 @@ const nextConfig = {
   // Skip type checking during build (for deployment)
   typescript: {
     ignoreBuildErrors: true,
+  },
+
+  // Experimental features for memory optimization
+  experimental: {
+    // Optimize package imports to reduce bundle size
+    optimizePackageImports: [
+      'lucide-react',
+      'framer-motion',
+      '@radix-ui/react-accordion',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-popover',
+      '@radix-ui/react-select',
+      '@radix-ui/react-tabs',
+      '@radix-ui/react-toast',
+    ],
+  },
+
+  // Webpack optimizations for development
+  webpack: (config, { dev, isServer }) => {
+    if (dev && !isServer) {
+      // Reduce memory usage in development
+      config.optimization = {
+        ...config.optimization,
+        moduleIds: 'named',
+        chunkIds: 'named',
+        // Reduce memory by limiting concurrent compilations
+        runtimeChunk: false,
+      };
+      
+      // Reduce memory for source maps
+      config.devtool = 'cheap-module-source-map';
+    }
+    return config;
   },
 }
 

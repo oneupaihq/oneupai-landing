@@ -13,7 +13,6 @@ export interface SiteConfig {
   ogImage: string
   links: {
     twitter: string
-    github: string
   }
 }
 

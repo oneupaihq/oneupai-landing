@@ -10,39 +10,40 @@ const lineSvg = "/images/waves-line.svg";
 const USD_TO_CAD_RATE = 1.35;
 
 function getCountryFromCookie(): string {
-  if (typeof document === 'undefined') return 'US';
-  const cookies = document.cookie.split(';');
-  const countryCookie = cookies.find(c => c.trim().startsWith('user-country='));
+  if (typeof document === "undefined") return "US";
+  const cookies = document.cookie.split(";");
+  const countryCookie = cookies.find((c) =>
+    c.trim().startsWith("user-country=")
+  );
   if (countryCookie) {
-    const value = countryCookie.split('=')[1];
-    return value ? value.trim() : 'US';
+    const value = countryCookie.split("=")[1];
+    return value ? value.trim() : "US";
   }
-  return 'US';
+  return "US";
 }
 
 export default function PricingSection() {
   const { openSalesPopup } = usePopup();
   const [mounted, setMounted] = useState(false);
   const [pricing, setPricing] = useState({
-    starter: '$47',
-    professional: '$97',
-    enterprise: 'Let’s Talk',
+    starter: "$47",
+    professional: "$97",
+    enterprise: "Let’s Talk",
   });
 
-  const [scalePeriod, setScalePeriod] = useState('/mo');
-
-  const [scalePrice, setScalePrice] = useState('$297');
+  const [scalePeriod, setScalePeriod] = useState("/mo");
+  const [scalePrice, setScalePrice] = useState("$297");
 
   useEffect(() => {
     setMounted(true);
     const country = getCountryFromCookie();
-    if (country === 'CA') {
+    if (country === "CA") {
       const starterCAD = Math.round(47 * USD_TO_CAD_RATE);
       const professionalCAD = Math.round(97 * USD_TO_CAD_RATE);
       setPricing({
         starter: `CAD$${starterCAD}`,
         professional: `CAD$${professionalCAD}`,
-        enterprise: 'Let’s Talk',
+        enterprise: "Let’s Talk",
       });
     }
   }, []);
@@ -50,7 +51,8 @@ export default function PricingSection() {
   const pricingPlans = [
     {
       title: "LAUNCH",
-      description: "Your business, open 24/7 — capturing leads while you sleep",
+      description:
+        "Your business, open 24/7 — capturing leads while you sleep",
       price: pricing.starter,
       period: "/mo",
       isPopular: false,
@@ -59,7 +61,8 @@ export default function PricingSection() {
     },
     {
       title: "GROW",
-      description: "An AI that knows your business and scales your reach across every channel",
+      description:
+        "An AI that knows your business and scales your reach across every channel",
       price: pricing.professional,
       period: "/mo",
       isPopular: true,
@@ -68,7 +71,8 @@ export default function PricingSection() {
     },
     {
       title: "SCALE",
-      description: "Built around your business model, not the other way around",
+      description:
+        "Built around your business model, not the other way around",
       price: scalePrice,
       period: scalePeriod,
       isPopular: false,
@@ -108,16 +112,24 @@ export default function PricingSection() {
   ];
 
   return (
-    <section id="pricing" className="relative w-full pb-12 md:pb-16 bg-white overflow-hidden">
+    <section
+      id="pricing"
+      className="relative w-full pb-12 md:pb-16 bg-white overflow-hidden"
+    >
       <div className="lg:block hidden absolute top-[25px] right-[-50px] w-[250px] z-10">
         <img src={lineSvg} className="w-full" alt="" />
       </div>
+
       <div className="max-w-[1320px] mx-auto px-4 md:px-8 relative z-10">
         <div className="flex flex-col items-center gap-5 max-w-[700px] mx-auto mb-12 md:mb-16">
-          <Badge variant="outline" className="px-4">Pricing</Badge>
+          <Badge variant="outline" className="px-4">
+            Pricing
+          </Badge>
+
           <h2 className="ff-jakarta font-bold text-[#000000] md:text-[40px] text-[36px] text-center leading-[120%]">
-            More Than a Website. A Smart Tool That Pays for Itself. 
+            More Than a Website. A Smart Tool That Pays for Itself.
           </h2>
+
           <p className="ff-Graphik font-normal text-[#1E293B] md:text-[20px] lg:text-xl text-base text-center md:leading-[30px] leading-[24px]">
             Start with a free trial. Upgrade when your business is ready. Cancel anytime.
           </p>
@@ -134,6 +146,7 @@ export default function PricingSection() {
                   <h3 className="ff-jakarta font-bold text-[#0e0e0f] text-[26px] xl:text-2xl">
                     {plan.title}
                   </h3>
+
                   {plan.isPopular && (
                     <Badge className="absolute lg:right-[-20px] lg:top-[-20px] right-[-12px] top-[-12px] bg-[#1a80e7] text-white ff-jakarta font-medium text-[12px] px-3 py-1.5 rounded-[10px]">
                       Popular
@@ -151,19 +164,25 @@ export default function PricingSection() {
                       Starting from
                     </p>
                   )}
+
                   <div className="flex items-baseline gap-1">
                     <span className="ff-jakarta font-bold text-[#0e0e0f] text-[34px] xl:text-[40px] leading-[100%]">
                       {plan.price}
                     </span>
                   </div>
+
                   <span className="ff-Graphik font-normal text-slate-600 text-sm">
                     {plan.period}
                   </span>
                 </div>
 
-                {/* CTA — link for trial plans, popup for sales */}
                 {plan.ctaType === "popup" ? (
-                  <Button variant="primary" size="md" className="mb-6" onClick={openSalesPopup}>
+                  <Button
+                    variant="primary"
+                    size="md"
+                    className="mb-6"
+                    onClick={openSalesPopup}
+                  >
                     {plan.ctaText}
                   </Button>
                 ) : (
@@ -178,6 +197,7 @@ export default function PricingSection() {
                   <h4 className="ff-jakarta font-semibold text-[#1a80e7] text-base mb-6">
                     What you get
                   </h4>
+
                   <ul className="flex flex-col gap-3">
                     {planFeatures[index].map((feature, idx) => (
                       <li
@@ -185,12 +205,27 @@ export default function PricingSection() {
                         className="flex items-start gap-3 border-b border-[#1E3A8A0D] pb-2"
                       >
                         <div className="flex-shrink-0 mt-0.5">
-                          <svg width="19" height="19" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fillRule="evenodd" clipRule="evenodd" d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16ZM11.8566 6.19113C12.1002 5.85614 12.0261 5.38708 11.6911 5.14345C11.3561 4.89982 10.8871 4.97388 10.6434 5.30887L7.15969 10.099L5.28033 8.21967C4.98744 7.92678 4.51256 7.92678 4.21967 8.21967C3.92678 8.51256 3.92678 8.98744 4.21967 9.28033L6.71967 11.7803C6.87477 11.9354 7.08999 12.0149 7.30867 11.9977C7.52734 11.9805 7.72754 11.8685 7.85655 11.6911L11.8566 6.19113Z" fill="#1A80E7"/>
+                          <svg
+                            width="19"
+                            height="19"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16ZM11.8566 6.19113C12.1002 5.85614 12.0261 5.38708 11.6911 5.14345C11.3561 4.89982 10.8871 4.97388 10.6434 5.30887L7.15969 10.099L5.28033 8.21967C4.98744 7.92678 4.51256 7.92678 4.21967 8.21967C3.92678 8.51256 3.92678 8.98744 4.21967 9.28033L6.71967 11.7803C6.87477 11.9354 7.08999 12.0149 7.30867 11.9977C7.52734 11.9805 7.72754 11.8685 7.85655 11.6911L11.8566 6.19113Z"
+                              fill="#1A80E7"
+                            />
                           </svg>
                         </div>
-                        <span className="ff-jakarta font-normal text-[#1E293B] text-[14px] leading-[140%]">
-                          {feature}
+
+                        <span className="ff-jakarta text-[#1E293B] text-[14px] leading-[140%]">
+                          {feature.includes("7-Day Free Trial Included") ? (
+                            <strong>{feature}</strong>
+                          ) : (
+                            feature
+                          )}
                         </span>
                       </li>
                     ))}

@@ -34,7 +34,7 @@ vercel --prod
 
 2. **Go to Settings**
    - Click "Settings" tab
-   - Click "Git" in the sidebar
+   - Click "General" in the sidebar
 
 3. **Change Production Branch**
    - Find "Production Branch" section
@@ -50,45 +50,7 @@ vercel --prod
 
 ## Option 2: Merge to Master (Recommended)
 
-Merge the `blog-cms` branch into `master` for production.
-
-### Step 1: Create Pull Request
-
-```bash
-# Go to GitHub
-open https://github.com/oneupaihq/oneupai-landing/compare/blog-cms
-```
-
-Or manually:
-1. Go to https://github.com/oneupaihq/oneupai-landing
-2. Click "Pull requests"
-3. Click "New pull request"
-4. Base: `master` ← Compare: `blog-cms`
-5. Click "Create pull request"
-6. Review changes
-7. Click "Merge pull request"
-
-### Step 2: Auto-Deploy
-
-Vercel will automatically deploy when you merge to `master`.
-
-### Or Merge Locally:
-
-```bash
-# 1. Switch to master
-git checkout master
-
-# 2. Pull latest changes
-git pull origin master
-
-# 3. Merge blog-cms
-git merge blog-cms
-
-# 4. Push to GitHub
-git push origin master
-
-# 5. Vercel auto-deploys
-```
+Merge the `blog-cms` branch into `master` for production via your source control provider, then Vercel will automatically deploy when the merge is complete.
 
 ---
 
@@ -262,7 +224,6 @@ vercel logs
 
 ### Pre-Deployment
 - [x] Code committed to `blog-cms` branch
-- [x] Code pushed to GitHub
 - [x] TypeScript checks passed
 - [x] Production build successful
 - [ ] Choose deployment method
@@ -290,10 +251,7 @@ vercel logs
 ### For Production:
 
 ```bash
-# 1. Merge to master
-git checkout master
-git merge blog-cms
-git push origin master
+# 1. Merge blog-cms to master via your source control provider
 
 # 2. Vercel auto-deploys
 

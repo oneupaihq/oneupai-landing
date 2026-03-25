@@ -143,7 +143,21 @@ export default function BlogAdminPage() {
           <li><Link href="/#features" className="text-sm font-medium text-[#64748b] hover:text-[#00244c] transition-colors">Features</Link></li>
           <li><Link href="/#pricing" className="text-sm font-medium text-[#64748b] hover:text-[#00244c] transition-colors">Pricing</Link></li>
           <li><Link href="/blog" className="text-sm font-medium text-[#64748b] hover:text-[#00244c] transition-colors">Blog</Link></li>
-          <li><Link href="/admin/blog" className="text-sm font-semibold text-[#1a80e7] transition-colors">Admin</Link></li>
+          <li>
+            <div className="relative group">
+              <button className="text-sm font-semibold text-[#1a80e7] transition-colors">
+                Admin ▾
+              </button>
+              <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-[#e4eaf2] rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                <Link href="/admin/blog" className="block px-4 py-2 text-sm text-[#64748b] hover:bg-[#f8fafc] hover:text-[#1a80e7] transition-colors">
+                  Blog Management
+                </Link>
+                <Link href="/admin/chat" className="block px-4 py-2 text-sm text-[#64748b] hover:bg-[#f8fafc] hover:text-[#1a80e7] transition-colors">
+                  Chat Analytics
+                </Link>
+              </div>
+            </div>
+          </li>
           <li>
             <Link 
               href="https://dashboard.oneupai.com/onboard" 

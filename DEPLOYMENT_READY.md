@@ -73,22 +73,14 @@ const getRedisClient = () => {
 
 ## 🚀 Deployment Instructions
 
-### Step 1: Push to Git
-
-```bash
-git add .
-git commit -m "Migrate to Upstash Redis for production"
-git push origin main
-```
-
-### Step 2: Deploy to Vercel
+### Step 1: Deploy to Vercel
 
 ```bash
 # Option A: Using Vercel CLI
 vercel --prod
 
 # Option B: Using Vercel Dashboard
-# Push to GitHub and Vercel will auto-deploy
+# Connect your project and deploy via the Vercel Dashboard
 ```
 
 ### Step 3: Add Redis Storage
@@ -200,7 +192,6 @@ Route (app)
 - [x] Environment variables documented
 
 ### Deployment ✅
-- [ ] Code pushed to Git
 - [ ] Deployed to Vercel
 - [ ] Redis database created
 - [ ] Redis connected to project

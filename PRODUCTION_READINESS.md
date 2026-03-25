@@ -249,7 +249,7 @@ export default async function AdminLayout({ children }) {
 **Move sensitive data to .env:**
 
 ```bash
-# .env.local (add to .gitignore)
+# .env.local (keep out of source control)
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=your-secure-password-here
 ADMIN_PIN=1251
