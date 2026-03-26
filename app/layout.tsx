@@ -39,15 +39,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${plusJakartaSans.variable} ${inter.variable} ${outfit.variable}`}>
-        <PopupProvider>
-          {children}
-        </PopupProvider>
-        
+      <head>
         {/* Crisp Chat Widget */}
         <Script
           id="crisp-chat"
-          strategy="afterInteractive"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.$crisp=[];
@@ -62,6 +58,11 @@ export default function RootLayout({
             `,
           }}
         />
+      </head>
+      <body className={`${plusJakartaSans.variable} ${inter.variable} ${outfit.variable}`}>
+        <PopupProvider>
+          {children}
+        </PopupProvider>
       </body>
     </html>
   );
