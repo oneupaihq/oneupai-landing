@@ -5,8 +5,14 @@ import { BlogPost } from '@/types/blog';
 // In production, these env vars are automatically set by Vercel when you add Redis
 // For build time, we create a mock client if credentials are missing
 const getRedisClient = () => {
-  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+  // Support multiple environment variable naming conventions
+  const url = process.env.KV_REST_API_URL || 
+              process.env.STORAGE_KV_REST_API_URL || 
+              process.env.UPSTASH_REDIS_REST_URL;
+  
+  const token = process.env.KV_REST_API_TOKEN || 
+                process.env.STORAGE_KV_REST_API_TOKEN || 
+                process.env.UPSTASH_REDIS_REST_TOKEN;
   
   if (!url || !token) {
     // Return a mock client for build time

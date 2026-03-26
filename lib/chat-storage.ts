@@ -2,11 +2,18 @@ import { Redis } from '@upstash/redis';
 
 // Initialize Redis client
 const getRedisClient = () => {
-  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+  // Support multiple environment variable naming conventions
+  const url = process.env.KV_REST_API_URL || 
+              process.env.STORAGE_KV_REST_API_URL || 
+              process.env.UPSTASH_REDIS_REST_URL;
+  
+  const token = process.env.KV_REST_API_TOKEN || 
+                process.env.STORAGE_KV_REST_API_TOKEN || 
+                process.env.UPSTASH_REDIS_REST_TOKEN;
   
   if (!url || !token) {
     console.warn('[Chat Storage] Redis credentials not found. Using mock client.');
+    console.warn('[Chat Storage] Checked: KV_REST_API_URL, STORAGE_KV_REST_API_URL, UPSTASH_REDIS_REST_URL');
     return {
       get: async () => null,
       set: async () => 'OK',
@@ -17,6 +24,7 @@ const getRedisClient = () => {
     } as any;
   }
   
+  console.log('[Chat Storage] Redis connected successfully');
   return new Redis({ url, token });
 };
 

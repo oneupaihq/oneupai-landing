@@ -1,7 +1,7 @@
 import { anthropic } from '@ai-sdk/anthropic';
 import { streamText, convertToModelMessages } from 'ai';
 import { NextRequest } from 'next/server';
-import { storeChatSession, trackQuestion, ChatSession, ChatMessage } from '@/lib/chat-storage';
+import { storeChatSession, trackQuestion, getChatSession, ChatSession, ChatMessage } from '@/lib/chat-storage';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -231,7 +231,19 @@ export async function POST(req: NextRequest) {
 
     // Log incoming message for debugging
     const lastMessage = messages[messages.length - 1];
-    console.log(`[Chat] Received message from ${clientIP}: ${lastMessage?.content?.substring(0, 50) || 'unknown'}`);
+    
+    // Extract message content from parts array or content property
+    let userMessageContent = '';
+    if (lastMessage?.parts && Array.isArray(lastMessage.parts)) {
+      userMessageContent = lastMessage.parts
+        .filter((part: any) => part.type === 'text')
+        .map((part: any) => part.text)
+        .join(' ');
+    } else if (lastMessage?.content) {
+      userMessageContent = lastMessage.content;
+    }
+    
+    console.log(`[Chat] Received message from ${clientIP}: ${userMessageContent?.substring(0, 50) || 'unknown'}`);
 
     // Optimize conversation history to reduce token usage
     const recentMessages = messages.slice(-6); // Increased to 6 messages (3 exchanges) for better context
@@ -246,15 +258,16 @@ export async function POST(req: NextRequest) {
       console.log(`[Chat] Cache hit for key: ${cacheKey.substring(0, 30)}...`);
       
       // Track analytics for cached response
-      const userMessage = lastMessage?.content || '';
-      if (userMessage) {
-        await trackQuestion(userMessage);
+      if (userMessageContent) {
+        await trackQuestion(userMessageContent);
         
-        // Store session data
-        const chatMessages: ChatMessage[] = [
+        // Get existing session or create new one
+        let existingSession = await getChatSession(sessionId!);
+        
+        const newMessages: ChatMessage[] = [
           {
             role: 'user',
-            content: userMessage,
+            content: userMessageContent,
             timestamp: new Date().toISOString(),
           },
           {
@@ -266,14 +279,34 @@ export async function POST(req: NextRequest) {
           }
         ];
         
-        await storeChatSession({
-          id: sessionId!,
-          messages: chatMessages,
-          startTime: new Date().toISOString(),
-          userIP: clientIP,
-          totalMessages: 2,
-          avgResponseTime: responseTime,
-        });
+        if (existingSession) {
+          // Append to existing session
+          existingSession.messages.push(...newMessages);
+          existingSession.totalMessages = existingSession.messages.length;
+          existingSession.endTime = new Date().toISOString();
+          
+          // Recalculate average response time
+          const responseTimes = existingSession.messages
+            .filter(m => m.responseTime)
+            .map(m => m.responseTime!);
+          existingSession.avgResponseTime = responseTimes.length > 0
+            ? responseTimes.reduce((sum, t) => sum + t, 0) / responseTimes.length
+            : responseTime;
+          
+          await storeChatSession(existingSession);
+          console.log(`[Chat] Updated cached session with ${existingSession.messages.length} total messages`);
+        } else {
+          // Create new session
+          await storeChatSession({
+            id: sessionId!,
+            messages: newMessages,
+            startTime: new Date().toISOString(),
+            userIP: clientIP,
+            totalMessages: newMessages.length,
+            avgResponseTime: responseTime,
+          });
+          console.log(`[Chat] Created new cached session with ${newMessages.length} messages`);
+        }
       }
       
       // Return cached response as a stream-like format
@@ -365,15 +398,16 @@ Remember: Every interaction is an opportunity to show how OneUpAI creates profes
         }
         
         // Track analytics
-        const userMessage = lastMessage?.content || '';
-        if (userMessage && result.text) {
-          await trackQuestion(userMessage);
+        if (userMessageContent && result.text) {
+          await trackQuestion(userMessageContent);
           
-          // Store session data
-          const chatMessages: ChatMessage[] = [
+          // Get existing session or create new one
+          let existingSession = await getChatSession(sessionId!);
+          
+          const newMessages: ChatMessage[] = [
             {
               role: 'user',
-              content: userMessage,
+              content: userMessageContent,
               timestamp: new Date().toISOString(),
             },
             {
@@ -385,14 +419,34 @@ Remember: Every interaction is an opportunity to show how OneUpAI creates profes
             }
           ];
           
-          await storeChatSession({
-            id: sessionId!,
-            messages: chatMessages,
-            startTime: new Date().toISOString(),
-            userIP: clientIP,
-            totalMessages: 2,
-            avgResponseTime: responseTime,
-          });
+          if (existingSession) {
+            // Append to existing session
+            existingSession.messages.push(...newMessages);
+            existingSession.totalMessages = existingSession.messages.length;
+            existingSession.endTime = new Date().toISOString();
+            
+            // Recalculate average response time
+            const responseTimes = existingSession.messages
+              .filter(m => m.responseTime)
+              .map(m => m.responseTime!);
+            existingSession.avgResponseTime = responseTimes.length > 0
+              ? responseTimes.reduce((sum, t) => sum + t, 0) / responseTimes.length
+              : responseTime;
+            
+            await storeChatSession(existingSession);
+            console.log(`[Chat] Updated session with ${existingSession.messages.length} total messages`);
+          } else {
+            // Create new session
+            await storeChatSession({
+              id: sessionId!,
+              messages: newMessages,
+              startTime: new Date().toISOString(),
+              userIP: clientIP,
+              totalMessages: newMessages.length,
+              avgResponseTime: responseTime,
+            });
+            console.log(`[Chat] Created new session with ${newMessages.length} messages`);
+          }
         }
         
         // Optional: Log usage for cost monitoring (only in development)

@@ -11,6 +11,7 @@ import {
   MessageCircle,
   Target,
   Activity,
+  Download,
   Search,
   X
 } from 'lucide-react';
@@ -142,6 +143,26 @@ export default function ChatAnalyticsPage() {
     return 'text-red-400';
   };
 
+  const exportToCSV = () => {
+    const headers = ['Session ID', 'Start Time', 'Messages', 'Duration', 'Avg Response Time', 'Button Clicks'];
+    const rows = sessions.map(s => [
+      s.id,
+      s.startTime,
+      s.totalMessages,
+      formatDuration(s.startTime, s.endTime),
+      s.avgResponseTime || 0,
+      s.buttonClicks?.length || 0
+    ]);
+    
+    const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `chat-analytics-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+  };
+
   return (
     <PinProtection>
       <div className="min-h-screen bg-[#00244c] font-outfit">
@@ -175,14 +196,23 @@ export default function ChatAnalyticsPage() {
                 <p className="text-[#94a3b8]">Monitor chatbot performance and user interactions</p>
               </div>
               
-              <button
-                onClick={fetchAnalytics}
-                disabled={loading}
-                className="flex items-center gap-2 bg-gradient-to-r from-[#1A80E7] to-[#00C48C] text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all disabled:opacity-50"
-              >
-                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-                Refresh
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={exportToCSV}
+                  className="flex items-center gap-2 bg-white/10 border border-white/20 text-white px-4 py-2 rounded-lg hover:bg-white/20 transition-all"
+                >
+                  <Download className="w-4 h-4" />
+                  Export
+                </button>
+                <button
+                  onClick={fetchAnalytics}
+                  disabled={loading}
+                  className="flex items-center gap-2 bg-gradient-to-r from-[#1A80E7] to-[#00C48C] text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                  Refresh
+                </button>
+              </div>
             </div>
           </div>
 
