@@ -261,52 +261,54 @@ export async function POST(req: NextRequest) {
       if (userMessageContent) {
         await trackQuestion(userMessageContent);
         
-        // Get existing session or create new one
-        let existingSession = await getChatSession(sessionId!);
-        
-        const newMessages: ChatMessage[] = [
-          {
-            role: 'user',
-            content: userMessageContent,
-            timestamp: new Date().toISOString(),
-          },
-          {
-            role: 'assistant',
-            content: cachedResponse,
-            timestamp: new Date().toISOString(),
-            cached: true,
-            responseTime,
+        // Convert all messages from client to ChatMessage format
+        const allChatMessages: ChatMessage[] = messages.map((msg: any) => {
+          let content = '';
+          if (msg.parts && Array.isArray(msg.parts)) {
+            content = msg.parts
+              .filter((part: any) => part.type === 'text')
+              .map((part: any) => part.text)
+              .join(' ');
+          } else if (msg.content) {
+            content = msg.content;
           }
-        ];
+          
+          return {
+            role: msg.role,
+            content,
+            timestamp: new Date().toISOString(),
+          };
+        });
         
-        if (existingSession) {
-          // Append to existing session
-          existingSession.messages.push(...newMessages);
-          existingSession.totalMessages = existingSession.messages.length;
-          existingSession.endTime = new Date().toISOString();
-          
-          // Recalculate average response time
-          const responseTimes = existingSession.messages
-            .filter(m => m.responseTime)
-            .map(m => m.responseTime!);
-          existingSession.avgResponseTime = responseTimes.length > 0
-            ? responseTimes.reduce((sum, t) => sum + t, 0) / responseTimes.length
-            : responseTime;
-          
-          await storeChatSession(existingSession);
-          console.log(`[Chat] Updated cached session with ${existingSession.messages.length} total messages`);
-        } else {
-          // Create new session
-          await storeChatSession({
-            id: sessionId!,
-            messages: newMessages,
-            startTime: new Date().toISOString(),
-            userIP: clientIP,
-            totalMessages: newMessages.length,
-            avgResponseTime: responseTime,
-          });
-          console.log(`[Chat] Created new cached session with ${newMessages.length} messages`);
-        }
+        // Add the assistant's cached response
+        allChatMessages.push({
+          role: 'assistant',
+          content: cachedResponse,
+          timestamp: new Date().toISOString(),
+          cached: true,
+          responseTime,
+        });
+        
+        // Calculate average response time
+        const responseTimes = allChatMessages
+          .filter(m => m.responseTime)
+          .map(m => m.responseTime!);
+        const avgResponseTime = responseTimes.length > 0
+          ? responseTimes.reduce((sum, t) => sum + t, 0) / responseTimes.length
+          : responseTime;
+        
+        // Store complete session with all messages
+        await storeChatSession({
+          id: sessionId!,
+          messages: allChatMessages,
+          startTime: allChatMessages[0].timestamp,
+          endTime: new Date().toISOString(),
+          userIP: clientIP,
+          totalMessages: allChatMessages.length,
+          avgResponseTime,
+        });
+        
+        console.log(`[Chat] Stored cached session with ${allChatMessages.length} total messages`);
       }
       
       // Return cached response as a stream-like format
@@ -401,52 +403,54 @@ Remember: Every interaction is an opportunity to show how OneUpAI creates profes
         if (userMessageContent && result.text) {
           await trackQuestion(userMessageContent);
           
-          // Get existing session or create new one
-          let existingSession = await getChatSession(sessionId!);
-          
-          const newMessages: ChatMessage[] = [
-            {
-              role: 'user',
-              content: userMessageContent,
-              timestamp: new Date().toISOString(),
-            },
-            {
-              role: 'assistant',
-              content: result.text,
-              timestamp: new Date().toISOString(),
-              cached: false,
-              responseTime,
+          // Convert all messages from client to ChatMessage format
+          const allChatMessages: ChatMessage[] = messages.map((msg: any) => {
+            let content = '';
+            if (msg.parts && Array.isArray(msg.parts)) {
+              content = msg.parts
+                .filter((part: any) => part.type === 'text')
+                .map((part: any) => part.text)
+                .join(' ');
+            } else if (msg.content) {
+              content = msg.content;
             }
-          ];
+            
+            return {
+              role: msg.role,
+              content,
+              timestamp: new Date().toISOString(),
+            };
+          });
           
-          if (existingSession) {
-            // Append to existing session
-            existingSession.messages.push(...newMessages);
-            existingSession.totalMessages = existingSession.messages.length;
-            existingSession.endTime = new Date().toISOString();
-            
-            // Recalculate average response time
-            const responseTimes = existingSession.messages
-              .filter(m => m.responseTime)
-              .map(m => m.responseTime!);
-            existingSession.avgResponseTime = responseTimes.length > 0
-              ? responseTimes.reduce((sum, t) => sum + t, 0) / responseTimes.length
-              : responseTime;
-            
-            await storeChatSession(existingSession);
-            console.log(`[Chat] Updated session with ${existingSession.messages.length} total messages`);
-          } else {
-            // Create new session
-            await storeChatSession({
-              id: sessionId!,
-              messages: newMessages,
-              startTime: new Date().toISOString(),
-              userIP: clientIP,
-              totalMessages: newMessages.length,
-              avgResponseTime: responseTime,
-            });
-            console.log(`[Chat] Created new session with ${newMessages.length} messages`);
-          }
+          // Add the assistant's response
+          allChatMessages.push({
+            role: 'assistant',
+            content: result.text,
+            timestamp: new Date().toISOString(),
+            cached: false,
+            responseTime,
+          });
+          
+          // Calculate average response time
+          const responseTimes = allChatMessages
+            .filter(m => m.responseTime)
+            .map(m => m.responseTime!);
+          const avgResponseTime = responseTimes.length > 0
+            ? responseTimes.reduce((sum, t) => sum + t, 0) / responseTimes.length
+            : responseTime;
+          
+          // Store complete session with all messages
+          await storeChatSession({
+            id: sessionId!,
+            messages: allChatMessages,
+            startTime: allChatMessages[0].timestamp,
+            endTime: new Date().toISOString(),
+            userIP: clientIP,
+            totalMessages: allChatMessages.length,
+            avgResponseTime,
+          });
+          
+          console.log(`[Chat] Stored session with ${allChatMessages.length} total messages`);
         }
         
         // Optional: Log usage for cost monitoring (only in development)
