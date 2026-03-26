@@ -9,22 +9,11 @@ import  PricingSection  from "./components/sections/PricingSection";
 import  TestimonialsSection  from "./components/sections/TestimonialsSection";
 import UGC from "./components/sections/UGC";
 import VideoSection from "./components/sections/VideoSection";
-import { ChatBot } from "./components/ui/chat";
-import { Badge } from "./components/ui/badge";
-import { Button } from "./components/ui/button";
-import { Card, CardContent } from "./components/ui/card";
+// import { ChatBot } from "./components/ui/chat"; // Replaced with Crisp Chat
 import OurPartenrs from "./components/sections/OurParteners";
 
 
 
-
-
-
-const ugcImages = [
-  { bg: "bg-[#eaf6fb]", image: "/rectangle-6533.png" },
-  { bg: "bg-[#eaf6fb]", image: "/rectangle-6534.png" },
-  { bg: "bg-[#eaf6fb]", image: "/rectangle-6535.png" },
-];
 
 export default function Home() {
   return (
@@ -47,8 +36,8 @@ export default function Home() {
 
       <FooterSection />
 
-      {/* AI Chatbot */}
-      <ChatBot />
+      {/* AI Chatbot - Now using Crisp Chat (loaded in layout.tsx) */}
+      {/* <ChatBot /> */}
     </div>
   )
 }
