@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter, Outfit } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import { PopupProvider } from "./components/sections/PopupContext";
+import TawkToChat from "./components/TawkToChat";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -39,30 +39,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        {/* Crisp Chat Widget */}
-        <Script
-          id="crisp-chat"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.$crisp=[];
-              window.CRISP_WEBSITE_ID="28962ab4-98ec-4a85-aa74-e7fe142ad303";
-              (function(){
-                d=document;
-                s=d.createElement("script");
-                s.src="https://client.crisp.chat/l.js";
-                s.async=1;
-                d.getElementsByTagName("head")[0].appendChild(s);
-              })();
-            `,
-          }}
-        />
-      </head>
       <body className={`${plusJakartaSans.variable} ${inter.variable} ${outfit.variable}`}>
         <PopupProvider>
           {children}
         </PopupProvider>
+        <TawkToChat />
       </body>
     </html>
   );
