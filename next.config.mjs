@@ -31,16 +31,17 @@ const securityHeaders = [
   // - Allows vumbnail.com for video thumbnails
   // - Allows oneupai.com domains for template iframes
   // - Allows Tawk.to chat widget (embed.tawk.to, *.tawk.to)
+  // - Allows RAGbot chat widget (ragbot0.vercel.app)
   // - 'unsafe-inline' on style-src is needed for Tailwind/styled components
   {
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' player.vimeo.com embed.tawk.to *.tawk.to",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' player.vimeo.com embed.tawk.to *.tawk.to ragbot0.vercel.app",
       "frame-src player.vimeo.com *.oneupai.com *.vercel.app *.tawk.to embed.tawk.to",
       "img-src 'self' data: blob: vumbnail.com i.vimeocdn.com www.figma.com *.tawk.to embed.tawk.to",
-      "media-src 'self' vimeo.com *.vimeocdn.com",
-      "connect-src 'self' *.vimeo.com *.vimeocdn.com fresnel.vimeocdn.com *.tawk.to wss://*.tawk.to embed.tawk.to",
+      "media-src 'self' vimeo.com *.vimeocdn.com storage.googleapis.com",
+      "connect-src 'self' *.vimeo.com *.vimeocdn.com fresnel.vimeocdn.com *.tawk.to wss://*.tawk.to embed.tawk.to ragbot0.vercel.app",
       "style-src 'self' 'unsafe-inline' fonts.googleapis.com embed.tawk.to",
       "font-src 'self' data: fonts.gstatic.com",
       "worker-src blob:",

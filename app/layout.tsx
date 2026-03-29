@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { PopupProvider } from "./components/sections/PopupContext";
-import TawkToChat from "./components/TawkToChat";
+// import TawkToChat from "./components/TawkToChat"; // Commented out - using RAGbot instead
+import RAGbotChat from "./components/RAGbotChat";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -43,7 +44,8 @@ export default function RootLayout({
         <PopupProvider>
           {children}
         </PopupProvider>
-        <TawkToChat />
+        {/* <TawkToChat /> */} {/* Commented out - using RAGbot instead */}
+        <RAGbotChat />
       </body>
     </html>
   );
