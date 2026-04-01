@@ -22,12 +22,22 @@ export function ChatBot() {
   const [mounted, setMounted] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(true);
   const [inputValue, setInputValue] = useState('');
+  const [sessionId, setSessionId] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Generate session ID on mount
+  useEffect(() => {
+    const id = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    setSessionId(id);
+  }, []);
 
   const { messages, sendMessage, status, error, setMessages } = useChat({
     transport: new DefaultChatTransport({
       api: '/api/chat',
     }),
+    body: {
+      sessionId,
+    },
     onFinish: () => setShowSuggestions(false),
   });
 
@@ -61,9 +71,24 @@ export function ChatBot() {
 
   const toggleChat = () => setIsOpen((prev) => !prev);
 
-  const handleSuggestedQuestion = (question: string) => {
+  const handleSuggestedQuestion = async (question: string) => {
     sendMessage({ text: question });
     setShowSuggestions(false);
+    
+    // Track suggested question click
+    try {
+      await fetch('/api/chat-analytics/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId,
+          type: 'suggested_question',
+          data: question,
+        }),
+      });
+    } catch (err) {
+      console.error('Failed to track suggested question:', err);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {

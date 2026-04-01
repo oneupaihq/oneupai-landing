@@ -7,7 +7,6 @@ export const siteConfig: SiteConfig = {
   ogImage: "https://oneupai.com/og.jpg",
   links: {
     twitter: "https://twitter.com/oneupai",
-    github: "",
   },
 }
 

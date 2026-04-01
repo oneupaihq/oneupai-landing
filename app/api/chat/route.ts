@@ -1,6 +1,7 @@
 import { anthropic } from '@ai-sdk/anthropic';
 import { streamText, convertToModelMessages } from 'ai';
 import { NextRequest } from 'next/server';
+import { storeChatSession, trackQuestion, getChatSession, ChatSession, ChatMessage } from '@/lib/chat-storage';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -17,6 +18,67 @@ const MAX_TOKENS = parseInt(process.env.CHAT_MAX_TOKENS || '800'); // Keep high 
 const TEMPERATURE = parseFloat(process.env.CHAT_TEMPERATURE || '0.3'); // Slightly more creative
 const MAX_REQUESTS_PER_WINDOW = parseInt(process.env.CHAT_RATE_LIMIT_REQUESTS || '50'); // Increased for better UX
 const CACHE_DURATION = parseInt(process.env.CHAT_CACHE_DURATION || '600000'); // 10 minutes default
+const MAX_CACHE_SIZE = 50; // Limit cache to 50 entries to prevent memory bloat
+const MAX_RATE_LIMIT_ENTRIES = 1000; // Limit rate limit tracking to 1000 IPs
+
+// Periodic cleanup to prevent memory leaks
+let lastCleanup = Date.now();
+const CLEANUP_INTERVAL = 5 * 60 * 1000; // Clean up every 5 minutes
+
+function cleanupMemory() {
+  const now = Date.now();
+  
+  // Only run cleanup every 5 minutes
+  if (now - lastCleanup < CLEANUP_INTERVAL) return;
+  
+  lastCleanup = now;
+  
+  // Clean up expired rate limit entries
+  let rateLimitCleaned = 0;
+  for (const [ip, data] of requestCounts.entries()) {
+    if (now > data.resetTime) {
+      requestCounts.delete(ip);
+      rateLimitCleaned++;
+    }
+  }
+  
+  // If still too many entries, remove oldest ones
+  if (requestCounts.size > MAX_RATE_LIMIT_ENTRIES) {
+    const entriesToRemove = requestCounts.size - MAX_RATE_LIMIT_ENTRIES;
+    const sortedEntries = Array.from(requestCounts.entries())
+      .sort((a, b) => a[1].resetTime - b[1].resetTime);
+    
+    for (let i = 0; i < entriesToRemove; i++) {
+      requestCounts.delete(sortedEntries[i][0]);
+      rateLimitCleaned++;
+    }
+  }
+  
+  // Clean up expired cache entries
+  let cacheCleaned = 0;
+  for (const [key, data] of responseCache.entries()) {
+    if (now - data.timestamp > CACHE_DURATION) {
+      responseCache.delete(key);
+      cacheCleaned++;
+    }
+  }
+  
+  // If cache is still too large, remove oldest entries
+  if (responseCache.size > MAX_CACHE_SIZE) {
+    const entriesToRemove = responseCache.size - MAX_CACHE_SIZE;
+    const sortedEntries = Array.from(responseCache.entries())
+      .sort((a, b) => a[1].timestamp - b[1].timestamp);
+    
+    for (let i = 0; i < entriesToRemove; i++) {
+      responseCache.delete(sortedEntries[i][0]);
+      cacheCleaned++;
+    }
+  }
+  
+  if (rateLimitCleaned > 0 || cacheCleaned > 0) {
+    console.log(`[Memory Cleanup] Removed ${rateLimitCleaned} rate limit entries, ${cacheCleaned} cache entries. Current sizes: rate=${requestCounts.size}, cache=${responseCache.size}`);
+  }
+}
 
 function getClientIP(request: NextRequest): string {
   const forwarded = request.headers.get('x-forwarded-for');
@@ -49,6 +111,16 @@ function isRateLimited(ip: string): boolean {
   
   userRequests.count++;
   return false;
+}
+
+// Cleanup expired entries immediately when checking rate limits
+function cleanupExpiredRateLimits() {
+  const now = Date.now();
+  for (const [ip, data] of requestCounts.entries()) {
+    if (now > data.resetTime) {
+      requestCounts.delete(ip);
+    }
+  }
 }
 
 function getCacheKey(messages: any[]): string {
@@ -96,24 +168,47 @@ function getCachedResponse(key: string): string | null {
 function setCachedResponse(key: string, response: string): void {
   if (!key || response.length < 10) return; // Don't cache very short responses
   
+  // Don't cache very large responses (> 5KB) to prevent memory bloat
+  if (response.length > 5000) {
+    console.log(`[Cache] Skipping large response (${response.length} chars)`);
+    return;
+  }
+  
   responseCache.set(key, {
     response,
     timestamp: Date.now()
   });
   
-  // Clean up old cache entries (simple LRU)
-  if (responseCache.size > 100) {
-    const oldestKey = responseCache.keys().next().value;
-    if (oldestKey) {
-      responseCache.delete(oldestKey);
+  // Enforce strict cache size limit
+  if (responseCache.size > MAX_CACHE_SIZE) {
+    // Remove oldest entries until we're under the limit
+    const sortedEntries = Array.from(responseCache.entries())
+      .sort((a, b) => a[1].timestamp - b[1].timestamp);
+    
+    const toRemove = responseCache.size - MAX_CACHE_SIZE;
+    for (let i = 0; i < toRemove; i++) {
+      responseCache.delete(sortedEntries[i][0]);
     }
   }
 }
 
 export async function POST(req: NextRequest) {
+  const startTime = Date.now();
+  let sessionId: string | undefined;
+  let wasCached = false;
+  
+  // Run periodic memory cleanup
+  cleanupMemory();
+  
   try {
     // Rate limiting
     const clientIP = getClientIP(req);
+    
+    // Clean up expired rate limits before checking
+    if (requestCounts.size > 100) {
+      cleanupExpiredRateLimits();
+    }
+    
     if (isRateLimited(clientIP)) {
       console.log(`[Chat] Rate limited for IP: ${clientIP}`);
       return new Response(
@@ -122,7 +217,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { messages } = await req.json();
+    const { messages, sessionId: clientSessionId } = await req.json();
+    sessionId = clientSessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     // Input validation
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
@@ -135,7 +231,19 @@ export async function POST(req: NextRequest) {
 
     // Log incoming message for debugging
     const lastMessage = messages[messages.length - 1];
-    console.log(`[Chat] Received message from ${clientIP}: ${lastMessage?.content?.substring(0, 50) || 'unknown'}`);
+    
+    // Extract message content from parts array or content property
+    let userMessageContent = '';
+    if (lastMessage?.parts && Array.isArray(lastMessage.parts)) {
+      userMessageContent = lastMessage.parts
+        .filter((part: any) => part.type === 'text')
+        .map((part: any) => part.text)
+        .join(' ');
+    } else if (lastMessage?.content) {
+      userMessageContent = lastMessage.content;
+    }
+    
+    console.log(`[Chat] Received message from ${clientIP}: ${userMessageContent?.substring(0, 50) || 'unknown'}`);
 
     // Optimize conversation history to reduce token usage
     const recentMessages = messages.slice(-6); // Increased to 6 messages (3 exchanges) for better context
@@ -145,7 +253,64 @@ export async function POST(req: NextRequest) {
     const cachedResponse = getCachedResponse(cacheKey);
     
     if (cachedResponse) {
+      wasCached = true;
+      const responseTime = Date.now() - startTime;
       console.log(`[Chat] Cache hit for key: ${cacheKey.substring(0, 30)}...`);
+      
+      // Track analytics for cached response
+      if (userMessageContent) {
+        await trackQuestion(userMessageContent);
+        
+        // Convert all messages from client to ChatMessage format
+        const allChatMessages: ChatMessage[] = messages.map((msg: any) => {
+          let content = '';
+          if (msg.parts && Array.isArray(msg.parts)) {
+            content = msg.parts
+              .filter((part: any) => part.type === 'text')
+              .map((part: any) => part.text)
+              .join(' ');
+          } else if (msg.content) {
+            content = msg.content;
+          }
+          
+          return {
+            role: msg.role,
+            content,
+            timestamp: new Date().toISOString(),
+          };
+        });
+        
+        // Add the assistant's cached response
+        allChatMessages.push({
+          role: 'assistant',
+          content: cachedResponse,
+          timestamp: new Date().toISOString(),
+          cached: true,
+          responseTime,
+        });
+        
+        // Calculate average response time
+        const responseTimes = allChatMessages
+          .filter(m => m.responseTime)
+          .map(m => m.responseTime!);
+        const avgResponseTime = responseTimes.length > 0
+          ? responseTimes.reduce((sum, t) => sum + t, 0) / responseTimes.length
+          : responseTime;
+        
+        // Store complete session with all messages
+        await storeChatSession({
+          id: sessionId!,
+          messages: allChatMessages,
+          startTime: allChatMessages[0].timestamp,
+          endTime: new Date().toISOString(),
+          userIP: clientIP,
+          totalMessages: allChatMessages.length,
+          avgResponseTime,
+        });
+        
+        console.log(`[Chat] Stored cached session with ${allChatMessages.length} total messages`);
+      }
+      
       // Return cached response as a stream-like format
       return new Response(
         `data: {"content":"${cachedResponse.replace(/"/g, '\\"')}"}\n\ndata: [DONE]\n\n`,
@@ -226,15 +391,71 @@ OneUpAI creates professional, AI-powered websites in under 5 minutes with:
 
 Remember: Every interaction is an opportunity to show how OneUpAI creates professional results and saves valuable time.`,
       onFinish: async (result) => {
+        const responseTime = Date.now() - startTime;
+        
         // Cache the response for future use
         if (result.text && cacheKey) {
           setCachedResponse(cacheKey, result.text);
           console.log(`[Chat] Response cached for key: ${cacheKey.substring(0, 30)}...`);
         }
         
+        // Track analytics
+        if (userMessageContent && result.text) {
+          await trackQuestion(userMessageContent);
+          
+          // Convert all messages from client to ChatMessage format
+          const allChatMessages: ChatMessage[] = messages.map((msg: any) => {
+            let content = '';
+            if (msg.parts && Array.isArray(msg.parts)) {
+              content = msg.parts
+                .filter((part: any) => part.type === 'text')
+                .map((part: any) => part.text)
+                .join(' ');
+            } else if (msg.content) {
+              content = msg.content;
+            }
+            
+            return {
+              role: msg.role,
+              content,
+              timestamp: new Date().toISOString(),
+            };
+          });
+          
+          // Add the assistant's response
+          allChatMessages.push({
+            role: 'assistant',
+            content: result.text,
+            timestamp: new Date().toISOString(),
+            cached: false,
+            responseTime,
+          });
+          
+          // Calculate average response time
+          const responseTimes = allChatMessages
+            .filter(m => m.responseTime)
+            .map(m => m.responseTime!);
+          const avgResponseTime = responseTimes.length > 0
+            ? responseTimes.reduce((sum, t) => sum + t, 0) / responseTimes.length
+            : responseTime;
+          
+          // Store complete session with all messages
+          await storeChatSession({
+            id: sessionId!,
+            messages: allChatMessages,
+            startTime: allChatMessages[0].timestamp,
+            endTime: new Date().toISOString(),
+            userIP: clientIP,
+            totalMessages: allChatMessages.length,
+            avgResponseTime,
+          });
+          
+          console.log(`[Chat] Stored session with ${allChatMessages.length} total messages`);
+        }
+        
         // Optional: Log usage for cost monitoring (only in development)
         if (process.env.NODE_ENV === 'development') {
-          console.log(`[AI Usage] Tokens: ${result.usage?.totalTokens || 'unknown'}, Model: ${modelName}`);
+          console.log(`[AI Usage] Tokens: ${result.usage?.totalTokens || 'unknown'}, Model: ${modelName}, Response Time: ${responseTime}ms`);
         }
       },
     });

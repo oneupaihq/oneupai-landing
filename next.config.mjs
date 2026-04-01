@@ -30,17 +30,19 @@ const securityHeaders = [
   // - Allows Vimeo iframes and their required scripts/assets
   // - Allows vumbnail.com for video thumbnails
   // - Allows oneupai.com domains for template iframes
+  // - Allows Tawk.to chat widget (embed.tawk.to, *.tawk.to)
+  // - Allows RAGbot chat widget (ragbot0.vercel.app)
   // - 'unsafe-inline' on style-src is needed for Tailwind/styled components
   {
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' player.vimeo.com",
-      "frame-src player.vimeo.com *.oneupai.com *.vercel.app",
-      "img-src 'self' data: blob: vumbnail.com i.vimeocdn.com www.figma.com",
-      "media-src 'self' vimeo.com *.vimeocdn.com",
-      "connect-src 'self' *.vimeo.com *.vimeocdn.com fresnel.vimeocdn.com",
-      "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' player.vimeo.com embed.tawk.to *.tawk.to botra.vercel.app",
+      "frame-src player.vimeo.com *.oneupai.com *.vercel.app *.tawk.to embed.tawk.to calendar.google.com *.calendar.google.com",
+      "img-src 'self' data: blob: vumbnail.com i.vimeocdn.com www.figma.com *.tawk.to embed.tawk.to",
+      "media-src 'self' vimeo.com *.vimeocdn.com storage.googleapis.com",
+      "connect-src 'self' *.vimeo.com *.vimeocdn.com fresnel.vimeocdn.com *.tawk.to wss://*.tawk.to embed.tawk.to botra.vercel.app localhost:3000",
+      "style-src 'self' 'unsafe-inline' fonts.googleapis.com embed.tawk.to",
       "font-src 'self' data: fonts.gstatic.com",
       "worker-src blob:",
     ].join('; '),
@@ -68,6 +70,8 @@ const nextConfig = {
     ],
     // Add quality 90 to supported qualities
     qualities: [75, 90],
+    // Reduce memory usage in dev
+    minimumCacheTTL: 60,
   },
 
   // Security headers applied to all routes
@@ -90,6 +94,40 @@ const nextConfig = {
   // Skip type checking during build (for deployment)
   typescript: {
     ignoreBuildErrors: true,
+  },
+
+  // Experimental features for memory optimization
+  experimental: {
+    // Optimize package imports to reduce bundle size
+    optimizePackageImports: [
+      'lucide-react',
+      'framer-motion',
+      '@radix-ui/react-accordion',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-popover',
+      '@radix-ui/react-select',
+      '@radix-ui/react-tabs',
+      '@radix-ui/react-toast',
+    ],
+  },
+
+  // Webpack optimizations for development
+  webpack: (config, { dev, isServer }) => {
+    if (dev && !isServer) {
+      // Reduce memory usage in development
+      config.optimization = {
+        ...config.optimization,
+        moduleIds: 'named',
+        chunkIds: 'named',
+        // Reduce memory by limiting concurrent compilations
+        runtimeChunk: false,
+      };
+      
+      // Reduce memory for source maps
+      config.devtool = 'cheap-module-source-map';
+    }
+    return config;
   },
 }
 
