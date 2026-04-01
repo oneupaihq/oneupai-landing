@@ -45,7 +45,7 @@ export default function RootLayout({
           {children}
         </PopupProvider>
         {/* <TawkToChat /> */} {/* Commented out - using RAGbot instead */}
-        <RAGbotChat />
+        {/* <RAGbotChat /> */} {/* Commented out - need correct widget ID */}
       </body>
     </html>
   );
