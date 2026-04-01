@@ -9,7 +9,7 @@ import  PricingSection  from "./components/sections/PricingSection";
 import  TestimonialsSection  from "./components/sections/TestimonialsSection";
 import UGC from "./components/sections/UGC";
 import VideoSection from "./components/sections/VideoSection";
-// import { ChatBot } from "./components/ui/chat"; // Commented out - using RAGbot instead
+import { ChatBot } from "./components/ui/chat"; // Custom Vercel AI SDK chatbot
 import OurPartenrs from "./components/sections/OurParteners";
 
 
@@ -36,8 +36,8 @@ export default function Home() {
 
       <FooterSection />
 
-      {/* AI Chatbot - Now using RAGbot (loaded in layout.tsx) */}
-      {/* <ChatBot /> */}
+      {/* AI Chatbot - Custom Vercel AI SDK implementation */}
+      <ChatBot />
     </div>
   )
 }

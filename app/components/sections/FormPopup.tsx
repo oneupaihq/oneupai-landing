@@ -73,7 +73,6 @@ const config = {
 export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) {
   const { heading, description, submitLabel, calendarTitle, calendarDescription, submitHandler } = config[variant];
   const showTextarea = variant === "sales";
-  const showCalendar = variant === "sales"; // Show calendar inline for sales
   const [step, setStep] = useState<Step>("form");
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -128,34 +127,28 @@ export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) 
       message: data.message || ""
     });
 
-    // For sales variant, always proceed to calendar regardless of email success
-    if (variant === "sales") {
+    try {
+      // Always wait for email to be sent successfully before proceeding
+      await submitHandler(data);
       setSubmitSuccess(true);
       
-      // Try to send email in background but don't wait for it
-      submitHandler(data).catch(() => {
-        // Silently handle email errors - user still proceeds to calendar
-      });
-      
-      setTimeout(() => {
-        setStep("calendar");
-        setSubmitSuccess(false);
-        setIsSubmitting(false);
-      }, 1500);
-    } else {
-      // For community variant, try to send email and show result
-      try {
-        await submitHandler(data);
-        setSubmitSuccess(true);
+      if (variant === "sales") {
+        // For sales variant, proceed to calendar after successful email
+        setTimeout(() => {
+          setStep("calendar");
+          setSubmitSuccess(false);
+          setIsSubmitting(false);
+        }, 1500);
+      } else {
+        // For community variant, close modal after successful email
         setTimeout(() => {
           onClose();
           setSubmitSuccess(false);
         }, 2000);
-      } catch (error) {
-        setSubmitError(error instanceof Error ? error.message : 'An error occurred');
-      } finally {
-        setIsSubmitting(false);
       }
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'An error occurred');
+      setIsSubmitting(false);
     }
   };
 

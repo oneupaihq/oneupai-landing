@@ -15,6 +15,8 @@ export default function BookACallModal({ isOpen, onClose }: BookACallModalProps)
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
   const [errors, setErrors] = useState<{ fullName?: string; email?: string }>({});
   const overlayRef = useRef<HTMLDivElement>(null);
 
@@ -32,6 +34,8 @@ export default function BookACallModal({ isOpen, onClose }: BookACallModalProps)
         setMessage("");
         setErrors({});
         setSubmitting(false);
+        setSubmitError(null);
+        setSubmitSuccess(false);
       }, 300);
     }
     return () => {
@@ -68,13 +72,46 @@ export default function BookACallModal({ isOpen, onClose }: BookACallModalProps)
   const handleSubmit = async () => {
     if (!validate()) return;
     setSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(false);
 
-    // TODO: send `{ fullName, email, message }` to your API route here
-    // e.g. await fetch("/api/contact", { method: "POST", body: JSON.stringify({ fullName, email, message }) })
+    try {
+      // Actually send the form data to your contact API
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: fullName,
+          email: email,
+          message: message,
+          type: "sales" // Use sales type for book-a-call forms
+        }),
+      });
 
-    await new Promise((r) => setTimeout(r, 600)); // simulate network
-    setSubmitting(false);
-    setStep("calendar");
+      const result = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to submit form');
+      }
+
+      // Only proceed to calendar if email was sent successfully
+      console.log('Form submitted successfully:', result);
+      setSubmitSuccess(true);
+      
+      // Show success message briefly, then proceed to calendar
+      setTimeout(() => {
+        setStep("calendar");
+        setSubmitSuccess(false);
+      }, 1500);
+      
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setSubmitError(error instanceof Error ? error.message : 'An error occurred');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const calendarSrc = `https://calendar.google.com/calendar/appointments/schedules/AcZssZ1zHtz5TpbUPKdLqQSMdjM3ytjL8dwweYX9BlJVVXpulfxdhDHMWJdnWA08aXLRRJENBuPD3JV-?gv=true&name=${encodeURIComponent(fullName)}&email=${encodeURIComponent(email)}`;
@@ -419,9 +456,41 @@ export default function BookACallModal({ isOpen, onClose }: BookACallModalProps)
                   />
                 </div>
 
-                <button className="oua-btn" onClick={handleSubmit} disabled={submitting}>
+                {/* Error Message */}
+                {submitError && (
+                  <div style={{ 
+                    background: '#fef2f2', 
+                    border: '1px solid #fecaca', 
+                    color: '#dc2626', 
+                    padding: '12px 16px', 
+                    borderRadius: '12px', 
+                    fontSize: '14px',
+                    marginBottom: '16px'
+                  }}>
+                    {submitError}
+                  </div>
+                )}
+
+                {/* Success Message */}
+                {submitSuccess && (
+                  <div style={{ 
+                    background: '#f0fdf4', 
+                    border: '1px solid #bbf7d0', 
+                    color: '#16a34a', 
+                    padding: '12px 16px', 
+                    borderRadius: '12px', 
+                    fontSize: '14px',
+                    marginBottom: '16px'
+                  }}>
+                    Great! Loading your calendar...
+                  </div>
+                )}
+
+                <button className="oua-btn" onClick={handleSubmit} disabled={submitting || submitSuccess}>
                   {submitting ? (
                     <><span className="oua-spinner" /> Saving your info...</>
+                  ) : submitSuccess ? (
+                    <>✓ Loading calendar...</>
                   ) : (
                     <>Book a Call →</>
                   )}
@@ -458,7 +527,6 @@ export default function BookACallModal({ isOpen, onClose }: BookACallModalProps)
                 <iframe
                   src={calendarSrc}
                   style={{ border: 0, width: "100%", height: 580 }}
-                  frameBorder="0"
                   title="Schedule a Call"
                   loading="lazy"
                 />
