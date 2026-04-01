@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode } from "react";
-import FormPopup, { PopupVariant } from "./FormPopupEnhanced";
+import FormPopup, { PopupVariant } from "./FormPopup";
 
 interface PopupContextType {
   openCommunityPopup: () => void;
