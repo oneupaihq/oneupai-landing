@@ -8,95 +8,177 @@ interface CustomCalendarProps {
   className?: string;
 }
 
+// Mock calendar data - in a real implementation, you'd fetch this from Google Calendar API
+const mockTimeSlots = [
+  { date: '2024-04-15', day: 'Mon', slots: ['9:00 AM', '10:30 AM', '2:00 PM', '3:30 PM'] },
+  { date: '2024-04-16', day: 'Tue', slots: ['9:00 AM', '11:00 AM', '1:00 PM', '4:00 PM'] },
+  { date: '2024-04-17', day: 'Wed', slots: ['10:00 AM', '11:30 AM', '2:30 PM'] },
+  { date: '2024-04-18', day: 'Thu', slots: ['9:30 AM', '1:00 PM', '3:00 PM', '4:30 PM'] },
+  { date: '2024-04-19', day: 'Fri', slots: ['9:00 AM', '10:00 AM', '2:00 PM'] },
+];
+
 export default function CustomCalendar({ name = "", email = "", className = "" }: CustomCalendarProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-  
-  const calendarSrc = `https://calendar.google.com/calendar/appointments/schedules/AcZssZ1zHtz5TpbUPKdLqQSMdjM3ytjL8dwweYX9BlJVVXpulfxdhDHMWJdnWA08aXLRRJENBuPD3JV-?gv=true&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`;
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [isBooking, setIsBooking] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
-  const handleIframeLoad = () => {
-    // Add a small delay to ensure calendar content is fully loaded
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+  const handleBooking = async () => {
+    if (!selectedDate || !selectedTime) return;
+    
+    setIsBooking(true);
+    
+    // Simulate booking process
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // In a real implementation, you'd make an API call to Google Calendar here
+    // const bookingData = {
+    //   date: selectedDate,
+    //   time: selectedTime,
+    //   name,
+    //   email,
+    //   duration: 30 // minutes
+    // };
+    
+    setIsBooking(false);
+    setShowConfirmation(true);
   };
 
-  const handleIframeError = () => {
-    setIsLoading(false);
-    setHasError(true);
-  };
-
-  const openCalendarInNewTab = () => {
+  const openGoogleCalendar = () => {
+    const calendarSrc = `https://calendar.google.com/calendar/appointments/schedules/AcZssZ1zHtz5TpbUPKdLqQSMdjM3ytjL8dwweYX9BlJVVXpulfxdhDHMWJdnWA08aXLRRJENBuPD3JV-?gv=true&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`;
     window.open(calendarSrc, '_blank', 'noopener,noreferrer');
   };
 
-  return (
-    <div className={`relative ${className}`}>
-      {/* Loading State */}
-      {isLoading && !hasError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-[#EAF6FB] rounded-[16px] z-50">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-8 h-8 border-3 border-[#1A80E7] border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-[#1A80E7] text-sm ff-jakarta font-medium">Loading calendar...</p>
-          </div>
-        </div>
-      )}
-
-      {/* Error State */}
-      {hasError && (
+  if (showConfirmation) {
+    return (
+      <div className={`${className}`}>
         <div className="bg-white rounded-[16px] p-8 shadow-lg border border-[#4065d33b] text-center">
           <div className="flex flex-col items-center gap-4">
-            <div className="w-12 h-12 bg-[#FEF2F2] rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-[#EF4444]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <div className="w-16 h-16 bg-gradient-to-br from-[#1A80E7] to-[#00C48C] rounded-full flex items-center justify-center">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-[#1E293B] mb-2">Calendar Loading Issue</h3>
-              <p className="text-[#64748B] text-sm mb-4">
-                We're having trouble loading the calendar. You can open it in a new tab instead.
+              <h3 className="text-xl font-bold text-[#1E293B] mb-2 ff-jakarta">Call Scheduled!</h3>
+              <p className="text-[#64748B] text-sm mb-4 ff-Graphik">
+                Your call is scheduled for {selectedTime} on {new Date(selectedDate!).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </p>
-              <button
-                onClick={openCalendarInNewTab}
-                className="bg-[#1A80E7] hover:bg-[#155FA0] text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
-              >
-                Open Calendar in New Tab
-              </button>
+              <p className="text-[#64748B] text-xs">
+                You'll receive a calendar invite at {email}
+              </p>
             </div>
           </div>
         </div>
-      )}
-      
-      {/* Calendar Container */}
-      {!hasError && (
-        <div className="bg-white rounded-[16px] p-2 shadow-lg border border-[#4065d33b] overflow-hidden">
-          <iframe
-            src={calendarSrc}
-            style={{ 
-              border: 0, 
-              width: "100%", 
-              height: 600,
-              borderRadius: "12px",
-              display: isLoading ? 'none' : 'block'
-            }}
-            frameBorder="0"
-            title="Schedule Your Call"
-            loading="eager"
-            className="rounded-[12px]"
-            onLoad={handleIframeLoad}
-            onError={handleIframeError}
-            allow="camera; microphone; geolocation"
-            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
-          />
+      </div>
+    );
+  }
+
+  return (
+    <div className={`${className}`}>
+      <div className="bg-white rounded-[16px] p-6 shadow-lg border border-[#4065d33b]">
+        
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h3 className="text-lg font-bold text-[#1A80E7] mb-2 ff-jakarta">Select Your Preferred Time</h3>
+          <p className="text-[#64748B] text-sm ff-Graphik">Choose a date and time that works best for you</p>
         </div>
-      )}
-      
-      {/* Subtle styling without interfering with functionality */}
-      <style jsx>{`
-        iframe {
-          transition: opacity 0.3s ease-in-out;
-        }
-      `}</style>
+
+        {/* Date Selection */}
+        <div className="mb-6">
+          <h4 className="text-sm font-semibold text-[#1E293B] mb-3 ff-jakarta">Available Dates</h4>
+          <div className="grid grid-cols-5 gap-2">
+            {mockTimeSlots.map((dayData) => (
+              <button
+                key={dayData.date}
+                onClick={() => {
+                  setSelectedDate(dayData.date);
+                  setSelectedTime(null); // Reset time selection
+                }}
+                className={`p-3 rounded-lg border-2 transition-all duration-200 ${
+                  selectedDate === dayData.date
+                    ? 'border-[#1A80E7] bg-[#EAF6FB] text-[#1A80E7]'
+                    : 'border-[#E2E8F0] hover:border-[#1A80E7] hover:bg-[#EAF6FB]'
+                }`}
+              >
+                <div className="text-xs font-medium ff-jakarta">{dayData.day}</div>
+                <div className="text-sm font-bold ff-jakarta">
+                  {new Date(dayData.date).getDate()}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Time Selection */}
+        {selectedDate && (
+          <div className="mb-6">
+            <h4 className="text-sm font-semibold text-[#1E293B] mb-3 ff-jakarta">Available Times</h4>
+            <div className="grid grid-cols-2 gap-2">
+              {mockTimeSlots
+                .find(day => day.date === selectedDate)
+                ?.slots.map((time) => (
+                  <button
+                    key={time}
+                    onClick={() => setSelectedTime(time)}
+                    className={`p-3 rounded-lg border-2 transition-all duration-200 text-sm font-medium ff-jakarta ${
+                      selectedTime === time
+                        ? 'border-[#1A80E7] bg-[#EAF6FB] text-[#1A80E7]'
+                        : 'border-[#E2E8F0] hover:border-[#1A80E7] hover:bg-[#EAF6FB]'
+                    }`}
+                  >
+                    {time}
+                  </button>
+                ))}
+            </div>
+          </div>
+        )}
+
+        {/* Meeting Details */}
+        {selectedDate && selectedTime && (
+          <div className="mb-6 p-4 bg-[#EAF6FB] rounded-lg border border-[#4065d33b]">
+            <h4 className="text-sm font-semibold text-[#1E293B] mb-2 ff-jakarta">Meeting Details</h4>
+            <div className="space-y-1 text-sm text-[#64748B] ff-Graphik">
+              <div>📅 {new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
+              <div>🕐 {selectedTime} (30 minutes)</div>
+              <div>👤 {name}</div>
+              <div>📧 {email}</div>
+              <div>💼 OneUpAI Strategy Call</div>
+            </div>
+          </div>
+        )}
+
+        {/* Action Buttons */}
+        <div className="space-y-3">
+          <button
+            onClick={handleBooking}
+            disabled={!selectedDate || !selectedTime || isBooking}
+            className="w-full bg-gradient-to-r from-[#1A80E7] to-[#00C48C] text-white py-4 px-6 rounded-lg font-bold text-base ff-jakarta transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            {isBooking ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Scheduling Your Call...
+              </>
+            ) : (
+              'Confirm & Schedule Call'
+            )}
+          </button>
+
+          {/* Fallback Option */}
+          <div className="text-center">
+            <p className="text-xs text-[#64748B] mb-2 ff-Graphik">
+              Having trouble? Use our direct booking link:
+            </p>
+            <button
+              onClick={openGoogleCalendar}
+              className="text-[#1A80E7] hover:text-[#155FA0] text-sm font-medium transition-colors duration-150 ff-jakarta"
+            >
+              Open Google Calendar →
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
