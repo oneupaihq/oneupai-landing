@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const chatbotId = params.id;
+    const { id: chatbotId } = await params;
     const { message, conversation_id, user_id } = await request.json();
     
     // Mock AI response - replace with actual AI integration
@@ -66,10 +66,10 @@ export async function POST(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const chatbotId = params.id;
+    const { id: chatbotId } = await params;
     const { searchParams } = new URL(request.url);
     const conversationId = searchParams.get('conversation_id');
     const limit = parseInt(searchParams.get('limit') || '50');
