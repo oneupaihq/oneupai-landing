@@ -120,7 +120,11 @@ export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) 
     };
 
     // Store form data for calendar step
-    setFormData(data);
+    setFormData({
+      name: data.name,
+      email: data.email,
+      message: data.message || ""
+    });
 
     try {
       await submitHandler(data);
