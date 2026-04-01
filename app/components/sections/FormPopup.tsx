@@ -72,6 +72,7 @@ const config = {
 export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) {
   const { heading, description, submitLabel, calendarTitle, calendarDescription, submitHandler } = config[variant];
   const showTextarea = variant === "sales";
+  const showCalendar = variant === "sales"; // Show calendar inline for sales
   const [step, setStep] = useState<Step>("form");
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -130,19 +131,11 @@ export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) 
       await submitHandler(data);
       setSubmitSuccess(true);
       
-      // For sales variant, show calendar after successful form submission
-      if (variant === "sales") {
-        setTimeout(() => {
-          setStep("calendar");
-          setSubmitSuccess(false);
-        }, 1500);
-      } else {
-        // For community variant, close after showing success
-        setTimeout(() => {
-          onClose();
-          setSubmitSuccess(false);
-        }, 2000);
-      }
+      // Close after showing success for both variants
+      setTimeout(() => {
+        onClose();
+        setSubmitSuccess(false);
+      }, 2000);
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'An error occurred');
     } finally {
@@ -150,8 +143,8 @@ export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) 
     }
   };
 
-  // Google Calendar URL for community welcome calls
-  const calendarSrc = `https://calendar.google.com/calendar/appointments/schedules/AcZssZ1zHtz5TpbUPKdLqQSMdjM3ytjL8dwweYX9BlJVVXpulfxdhDHMWJdnWA08aXLRRJENBuPD3JV-?gv=true&name=${encodeURIComponent(formData.name)}&email=${encodeURIComponent(formData.email)}`;
+  // Google Calendar URL - use form data if available, otherwise empty
+  const calendarSrc = `https://calendar.google.com/calendar/appointments/schedules/AcZssZ1zHtz5TpbUPKdLqQSMdjM3ytjL8dwweYX9BlJVVXpulfxdhDHMWJdnWA08aXLRRJENBuPD3JV-?gv=true&name=${encodeURIComponent(formData.name || "")}&email=${encodeURIComponent(formData.email || "")}`;
 
   return (
     <AnimatePresence>
@@ -178,7 +171,7 @@ export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) 
             className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
           >
             <div
-              className={`pointer-events-auto w-full ${step === "calendar" ? "max-w-[800px]" : "max-w-[630px]"} rounded-[20px] shadow-2xl flex flex-col transition-all duration-300`}
+              className={`pointer-events-auto w-full ${showCalendar ? "max-w-[1000px]" : "max-w-[630px]"} rounded-[20px] shadow-2xl flex flex-col transition-all duration-300`}
               style={{ background: "#EAF6FB", maxHeight: "calc(100vh - 32px)" }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -217,188 +210,149 @@ export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) 
                     {/* Divider */}
                     <div className="h-px bg-[#4065d33b] mb-6" />
 
-                    {/* Form */}
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                    {/* Layout: Form + Calendar side by side for sales, form only for community */}
+                    <div className={`${showCalendar ? "grid grid-cols-1 lg:grid-cols-2 gap-6" : ""}`}>
+                      
+                      {/* Form Section */}
+                      <div className={showCalendar ? "order-1" : ""}>
+                        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-                      {/* Full Name */}
-                      <div>
-                        <label className="block text-xs font-semibold text-[#12715B80] mb-1.5 tracking-wide uppercase">
-                          Full Name
-                        </label>
-                        <input
-                          name="name"
-                          type="text"
-                          placeholder="John Smith"
-                          required
-                          className="w-full rounded-[12px] bg-white border border-transparent px-4 md:py-4 py-3 text-sm text-gray-700 placeholder-[#00000080] outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition-all duration-200 shadow-sm"
-                        />
-                      </div>
-
-                      {/* Email */}
-                      <div>
-                        <label className="block text-xs font-semibold text-[#12715B80] mb-1.5 tracking-wide uppercase">
-                          Email Address
-                        </label>
-                        <input
-                          name="email"
-                          type="email"
-                          placeholder="name@company.com"
-                          required
-                          className="w-full rounded-[12px] bg-white border border-transparent px-4 md:py-4 py-3 text-sm text-gray-700 placeholder-[#00000080] outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition-all duration-200 shadow-sm"
-                        />
-                      </div>
-
-                      {/* Message — sales only */}
-                      <AnimatePresence initial={false}>
-                        {showTextarea && (
-                          <motion.div
-                            key="message-field"
-                            initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                            animate={{ opacity: 1, height: "auto", marginTop: 0 }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                          >
+                          {/* Full Name */}
+                          <div>
                             <label className="block text-xs font-semibold text-[#12715B80] mb-1.5 tracking-wide uppercase">
-                              How can we help?
+                              Full Name
                             </label>
-                            <textarea
-                              name="message"
-                              placeholder="Tell us about your business and what you're looking for..."
+                            <input
+                              name="name"
+                              type="text"
+                              placeholder="John Smith"
                               required
-                              rows={4}
-                              className="w-full rounded-[12px] bg-white border border-transparent px-4 py-3 text-sm text-gray-700 placeholder-[#00000080] outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition-all duration-200 shadow-sm resize-none"
+                              className="w-full rounded-[12px] bg-white border border-transparent px-4 md:py-4 py-3 text-sm text-gray-700 placeholder-[#00000080] outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition-all duration-200 shadow-sm"
                             />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                          </div>
 
-                      {/* Error Message */}
-                      {submitError && (
-                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                          {submitError}
-                        </div>
-                      )}
+                          {/* Email */}
+                          <div>
+                            <label className="block text-xs font-semibold text-[#12715B80] mb-1.5 tracking-wide uppercase">
+                              Email Address
+                            </label>
+                            <input
+                              name="email"
+                              type="email"
+                              placeholder="name@company.com"
+                              required
+                              className="w-full rounded-[12px] bg-white border border-transparent px-4 md:py-4 py-3 text-sm text-gray-700 placeholder-[#00000080] outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition-all duration-200 shadow-sm"
+                            />
+                          </div>
 
-                      {/* Success Message */}
-                      {submitSuccess && (
-                        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
-                          {variant === 'sales' 
-                            ? 'Message received! Now let\'s schedule your call...' 
-                            : 'Welcome to the community! Check your email for a confirmation message with next steps.'}
-                        </div>
-                      )}
+                          {/* Message — sales only */}
+                          <AnimatePresence initial={false}>
+                            {showTextarea && (
+                              <motion.div
+                                key="message-field"
+                                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                                animate={{ opacity: 1, height: "auto", marginTop: 0 }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                              >
+                                <label className="block text-xs font-semibold text-[#12715B80] mb-1.5 tracking-wide uppercase">
+                                  How can we help?
+                                </label>
+                                <textarea
+                                  name="message"
+                                  placeholder="Tell us about your business and what you're looking for..."
+                                  required
+                                  rows={4}
+                                  className="w-full rounded-[12px] bg-white border border-transparent px-4 py-3 text-sm text-gray-700 placeholder-[#00000080] outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition-all duration-200 shadow-sm resize-none"
+                                />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
 
-                      {/* Submit */}
-                      <button
-                        type="submit"
-                        disabled={isSubmitting || submitSuccess}
-                        className="mt-2 w-full rounded-[12px] bg-[#1A80E7] hover:bg-[#155FA0] active:scale-[0.98] text-white font-bold text-base md:py-4 py-3 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#1A80E7] disabled:active:scale-100"
-                      >
-                        {isSubmitting ? (
-                          <span className="flex items-center justify-center gap-2">
-                            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                            </svg>
-                            Sending...
-                          </span>
-                        ) : submitSuccess ? (
-                          <span className="flex items-center justify-center gap-2">
-                            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
-                            {variant === 'sales' ? 'Loading calendar...' : 'Sent!'}
-                          </span>
-                        ) : (
-                          submitLabel
-                        )}
-                      </button>
+                          {/* Error Message */}
+                          {submitError && (
+                            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                              {submitError}
+                            </div>
+                          )}
 
-                      <div className="text-center">
-                        {/* Call us — sales only */}
-                        {variant === "sales" && (
-                          <p className="ff-Graphik md:text-[15px] text-sm text-[#000000] md:mt-4 mt-1">
-                            Prefer to talk? &nbsp;&nbsp;
-                            <a
-                              href="tel:+18336638724"
-                              className="inline-flex items-center gap-1 text-[#1A80E7] hover:text-[#155FA0] font-medium transition-colors duration-150"
-                            >
-                              <svg width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M16.5 12.69v2.25a1.5 1.5 0 0 1-1.635 1.5A14.835 14.835 0 0 1 8.393 14.1a14.61 14.61 0 0 1-4.5-4.5 14.835 14.835 0 0 1-2.34-6.517A1.5 1.5 0 0 1 3.045 1.5H5.3a1.5 1.5 0 0 1 1.5 1.29c.095.72.27 1.428.525 2.108a1.5 1.5 0 0 1-.337 1.582L6.022 7.447a12 12 0 0 0 4.5 4.5l.967-.967a1.5 1.5 0 0 1 1.582-.337c.68.254 1.388.43 2.108.525A1.5 1.5 0 0 1 16.5 12.69Z" fill="currentColor"/>
-                              </svg>
-                              1-833-ONEUPAI (663-8724)
-                            </a>
-                          </p>
-                        )}
+                          {/* Success Message */}
+                          {submitSuccess && (
+                            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
+                              {variant === 'sales' 
+                                ? 'Message sent! We\'ll get back to you within a few hours. Check your email for confirmation details.' 
+                                : 'Welcome to the community! Check your email for a confirmation message with next steps.'}
+                            </div>
+                          )}
+
+                          {/* Submit */}
+                          <button
+                            type="submit"
+                            disabled={isSubmitting || submitSuccess}
+                            className="mt-2 w-full rounded-[12px] bg-[#1A80E7] hover:bg-[#155FA0] active:scale-[0.98] text-white font-bold text-base md:py-4 py-3 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#1A80E7] disabled:active:scale-100"
+                          >
+                            {isSubmitting ? (
+                              <span className="flex items-center justify-center gap-2">
+                                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                </svg>
+                                Sending...
+                              </span>
+                            ) : submitSuccess ? (
+                              <span className="flex items-center justify-center gap-2">
+                                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                </svg>
+                                Sent!
+                              </span>
+                            ) : (
+                              submitLabel
+                            )}
+                          </button>
+
+                          <div className="text-center">
+                            {/* Call us — sales only */}
+                            {variant === "sales" && (
+                              <p className="ff-Graphik md:text-[15px] text-sm text-[#000000] md:mt-4 mt-1">
+                                Prefer to talk? &nbsp;&nbsp;
+                                <a
+                                  href="tel:+18336638724"
+                                  className="inline-flex items-center gap-1 text-[#1A80E7] hover:text-[#155FA0] font-medium transition-colors duration-150"
+                                >
+                                  <svg width="12" height="12" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16.5 12.69v2.25a1.5 1.5 0 0 1-1.635 1.5A14.835 14.835 0 0 1 8.393 14.1a14.61 14.61 0 0 1-4.5-4.5 14.835 14.835 0 0 1-2.34-6.517A1.5 1.5 0 0 1 3.045 1.5H5.3a1.5 1.5 0 0 1 1.5 1.29c.095.72.27 1.428.525 2.108a1.5 1.5 0 0 1-.337 1.582L6.022 7.447a12 12 0 0 0 4.5 4.5l.967-.967a1.5 1.5 0 0 1 1.582-.337c.68.254 1.388.43 2.108.525A1.5 1.5 0 0 1 16.5 12.69Z" fill="currentColor"/>
+                                  </svg>
+                                  1-833-ONEUPAI (663-8724)
+                                </a>
+                              </p>
+                            )}
+                          </div>
+                        </form>
                       </div>
-                    </form>
-                  </>
-                )}
 
-                {step === "calendar" && (
-                  <>
-                    {/* Calendar Step Header */}
-                    <div className="flex justify-between items-center -mt-1 -mr-1 mb-6">
-                      <img
-                        className="w-20 md:w-28 h-auto"
-                        alt="Company Logo"
-                        src="/images/logo.svg"
-                      />
-                      <button
-                        onClick={onClose}
-                        className="w-8 h-8 flex items-center justify-center rounded-full text-gray-600 bg-black/10 hover:bg-black/15 transition-all duration-200"
-                        aria-label="Close"
-                      >
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                          <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                        </svg>
-                      </button>
-                    </div>
-
-                    {/* Calendar Title */}
-                    <h2 className="text-center ff-jakarta text-2xl sm:text-3xl font-bold text-[#1A80E7] mb-3 leading-tight">
-                      {calendarTitle}
-                    </h2>
-
-                    {/* Calendar Description */}
-                    <p className="text-[#140505] text-center max-w-[500px] mx-auto text-sm mb-6 ff-Graphik leading-relaxed">
-                      Hi {formData.name.split(" ")[0]}! {calendarDescription}
-                    </p>
-
-                    {/* Back Button */}
-                    <button
-                      onClick={() => setStep("form")}
-                      className="flex items-center gap-2 text-[#1A80E7] hover:text-[#155FA0] font-medium text-sm mb-4 transition-colors duration-150"
-                    >
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <path d="M10 12L6 8l4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                      Back to form
-                    </button>
-
-                    {/* Calendar Iframe */}
-                    <div className="bg-white rounded-[16px] p-2 shadow-sm border border-[#4065d33b]">
-                      <iframe
-                        src={calendarSrc}
-                        style={{ border: 0, width: "100%", height: 600 }}
-                        frameBorder="0"
-                        title="Schedule a Welcome Call"
-                        loading="lazy"
-                        className="rounded-[12px]"
-                      />
-                    </div>
-
-                    {/* Skip Option */}
-                    <div className="text-center mt-4">
-                      <button
-                        onClick={onClose}
-                        className="text-[#666] hover:text-[#1A80E7] text-sm font-medium transition-colors duration-150"
-                      >
-                        Skip for now - I'll schedule later
-                      </button>
+                      {/* Calendar Section - only for sales */}
+                      {showCalendar && (
+                        <div className="order-2">
+                          <h3 className="ff-jakarta text-lg font-semibold text-[#1A80E7] mb-3 text-center lg:text-left">
+                            Or Schedule a Call Directly
+                          </h3>
+                          <div className="bg-white rounded-[16px] p-2 shadow-sm border border-[#4065d33b]">
+                            <iframe
+                              src={calendarSrc}
+                              style={{ border: 0, width: "100%", height: 500 }}
+                              frameBorder="0"
+                              title="Schedule a Call"
+                              loading="lazy"
+                              className="rounded-[12px]"
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </>
                 )}
+
               </div>
             </div>
           </motion.div>
