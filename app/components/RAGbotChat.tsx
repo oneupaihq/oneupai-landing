@@ -13,7 +13,7 @@ export default function RAGbotChat() {
     // Load RAGbot script
     const script = document.createElement('script');
     script.id = 'ragbot';
-    script.src = 'https://botra.vercel.app/widget/9/embed.js';
+    script.src = 'https://botra.vercel.app/widget/10/embed.js'; // Changed to match the API calls
     script.async = true;
     
     const firstScript = document.getElementsByTagName('script')[0];
