@@ -37,11 +37,11 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' player.vimeo.com embed.tawk.to *.tawk.to ragbot0.vercel.app",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' player.vimeo.com embed.tawk.to *.tawk.to botra.vercel.app",
       "frame-src player.vimeo.com *.oneupai.com *.vercel.app *.tawk.to embed.tawk.to calendar.google.com *.calendar.google.com",
       "img-src 'self' data: blob: vumbnail.com i.vimeocdn.com www.figma.com *.tawk.to embed.tawk.to",
       "media-src 'self' vimeo.com *.vimeocdn.com storage.googleapis.com",
-      "connect-src 'self' *.vimeo.com *.vimeocdn.com fresnel.vimeocdn.com *.tawk.to wss://*.tawk.to embed.tawk.to ragbot0.vercel.app",
+      "connect-src 'self' *.vimeo.com *.vimeocdn.com fresnel.vimeocdn.com *.tawk.to wss://*.tawk.to embed.tawk.to botra.vercel.app",
       "style-src 'self' 'unsafe-inline' fonts.googleapis.com embed.tawk.to",
       "font-src 'self' data: fonts.gstatic.com",
       "worker-src blob:",
