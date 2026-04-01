@@ -128,27 +128,34 @@ export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) 
       message: data.message || ""
     });
 
-    try {
-      await submitHandler(data);
+    // For sales variant, always proceed to calendar regardless of email success
+    if (variant === "sales") {
       setSubmitSuccess(true);
       
-      // For sales variant, show calendar after successful form submission
-      if (variant === "sales") {
-        setTimeout(() => {
-          setStep("calendar");
-          setSubmitSuccess(false);
-        }, 1500);
-      } else {
-        // For community variant, close after showing success
+      // Try to send email in background but don't wait for it
+      submitHandler(data).catch(() => {
+        // Silently handle email errors - user still proceeds to calendar
+      });
+      
+      setTimeout(() => {
+        setStep("calendar");
+        setSubmitSuccess(false);
+        setIsSubmitting(false);
+      }, 1500);
+    } else {
+      // For community variant, try to send email and show result
+      try {
+        await submitHandler(data);
+        setSubmitSuccess(true);
         setTimeout(() => {
           onClose();
           setSubmitSuccess(false);
         }, 2000);
+      } catch (error) {
+        setSubmitError(error instanceof Error ? error.message : 'An error occurred');
+      } finally {
+        setIsSubmitting(false);
       }
-    } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : 'An error occurred');
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -285,7 +292,7 @@ export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) 
                       {submitSuccess && (
                         <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
                           {variant === 'sales' 
-                            ? 'Message received! Now let\'s schedule your call...' 
+                            ? 'Great! Now let\'s schedule your call...' 
                             : 'Welcome to the community! Check your email for a confirmation message with next steps.'}
                         </div>
                       )}
