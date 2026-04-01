@@ -130,14 +130,14 @@ export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) 
       await submitHandler(data);
       setSubmitSuccess(true);
       
-      // For community variant, show calendar after successful form submission
-      if (variant === "community") {
+      // For sales variant, show calendar after successful form submission
+      if (variant === "sales") {
         setTimeout(() => {
           setStep("calendar");
           setSubmitSuccess(false);
         }, 1500);
       } else {
-        // For sales variant, close after showing success
+        // For community variant, close after showing success
         setTimeout(() => {
           onClose();
           setSubmitSuccess(false);
@@ -282,9 +282,9 @@ export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) 
                       {/* Success Message */}
                       {submitSuccess && (
                         <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
-                          {variant === 'community' 
-                            ? 'Welcome to the community! Now let\'s schedule your welcome call...' 
-                            : 'Message sent! We\'ll get back to you within a few hours. Check your email for confirmation details.'}
+                          {variant === 'sales' 
+                            ? 'Message received! Now let\'s schedule your call...' 
+                            : 'Welcome to the community! Check your email for a confirmation message with next steps.'}
                         </div>
                       )}
 
@@ -307,7 +307,7 @@ export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) 
                             <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
-                            {variant === 'community' ? 'Loading calendar...' : 'Sent!'}
+                            {variant === 'sales' ? 'Loading calendar...' : 'Sent!'}
                           </span>
                         ) : (
                           submitLabel
