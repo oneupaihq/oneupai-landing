@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { usePopup } from "./PopupContext";
+import JoinCommunityModal from "../JoinCommunityModal";
 
 
 const cards = [
@@ -34,11 +36,13 @@ const line1Svg = "/images/line1.svg";
 export default function CommunityJoinSection() {
 
 const { openCommunityPopup } = usePopup();
+const [communityOpen, setCommunityOpen] = useState(false);
 
 
 
 
   return (
+    <>
     <section className="relative w-full py-12 lg:py-20 overflow-hidden bg-white">
       <div className="lg:block hidden absolute top-[25px] right-[-50px] w-[250px] z-10">
         <img src={lineSvg} className="w-full" alt="" />
@@ -106,11 +110,14 @@ const { openCommunityPopup } = usePopup();
                 asChild>
                 <a href="https://dashboard.oneupai.com/onboard">Get AI Strategy</a>
               </Button>
-              <Button variant='primary' size='md' onClick={openCommunityPopup}>
+              <Button variant='primary' size='md' onClick={() => setCommunityOpen(true)}>
                 Join Free Community
               </Button>
             </div>
       </div>
     </section>
+
+    <JoinCommunityModal isOpen={communityOpen} onClose={() => setCommunityOpen(false)} />
+    </>
   );
 }

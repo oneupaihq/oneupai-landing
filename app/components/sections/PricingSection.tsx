@@ -4,6 +4,7 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import { usePopup } from "./PopupContext";
+import BookACallModal from "../BookACallModal";
 
 const lineSvg = "/images/waves-line.svg";
 
@@ -25,6 +26,7 @@ function getCountryFromCookie(): string {
 export default function PricingSection() {
   const { openSalesPopup } = usePopup();
   const [mounted, setMounted] = useState(false);
+  const [bookingOpen, setBookingOpen] = useState(false);
   const [pricing, setPricing] = useState({
     starter: "$47",
     professional: "$97",
@@ -112,6 +114,7 @@ export default function PricingSection() {
   ];
 
   return (
+    <>
     <section
       id="pricing"
       className="relative w-full pb-12 md:pb-16 bg-white overflow-hidden"
@@ -181,7 +184,7 @@ export default function PricingSection() {
                     variant="primary"
                     size="md"
                     className="mb-6"
-                    onClick={openSalesPopup}
+                    onClick={() => setBookingOpen(true)}
                   >
                     {plan.ctaText}
                   </Button>
@@ -237,5 +240,8 @@ export default function PricingSection() {
         </div>
       </div>
     </section>
+
+    <BookACallModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
+    </>
   );
 }
