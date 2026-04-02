@@ -95,7 +95,7 @@ export async function storeChatSession(session: ChatSession): Promise<void> {
 export async function getChatSession(sessionId: string): Promise<ChatSession | null> {
   try {
     const key = `${CHAT_SESSION_PREFIX}${sessionId}`;
-    return await redis.get<ChatSession>(key);
+    return await redis.get(key) as ChatSession | null;
   } catch (error) {
     console.error('[Chat Storage] Error getting session:', error);
     return null;
@@ -149,7 +149,7 @@ export async function getMetricsForRange(startDate: string, endDate: string): Pr
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
       const dateStr = d.toISOString().split('T')[0];
       const key = `${CHAT_METRICS_PREFIX}${dateStr}`;
-      const dayMetrics = await redis.get<ChatMetrics>(key);
+      const dayMetrics = await redis.get(key) as ChatMetrics | null;
       
       if (dayMetrics) {
         metrics.push(dayMetrics);

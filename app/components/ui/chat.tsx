@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
 import { X, Send, Loader2, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -32,12 +31,6 @@ export function ChatBot() {
   }, []);
 
   const { messages, sendMessage, status, error, setMessages } = useChat({
-    transport: new DefaultChatTransport({
-      api: '/api/chat',
-    }),
-    body: {
-      sessionId,
-    },
     onFinish: () => setShowSuggestions(false),
   });
 

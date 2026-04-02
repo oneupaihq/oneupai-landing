@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const chatbotId = params.id;
+    const { id: chatbotId } = await params;
     
     // Mock chatbot configuration - replace with your actual data
     const chatbotConfig = {
@@ -51,10 +51,10 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const chatbotId = params.id;
+    const { id: chatbotId } = await params;
     const updates = await request.json();
     
     // Mock update response - replace with actual update logic

@@ -35,7 +35,7 @@ const SLUG_INDEX_PREFIX = 'blog:slug:';
 
 // Initialize with default posts if Redis is empty
 async function initializeBlogData() {
-  const posts = await redis.get<BlogPost[]>(POSTS_KEY);
+  const posts = await redis.get(POSTS_KEY) as BlogPost[] | null;
   
   if (!posts || posts.length === 0) {
     const defaultPosts: BlogPost[] = [
@@ -92,7 +92,7 @@ async function initializeBlogData() {
 
 export async function getAllPosts(): Promise<BlogPost[]> {
   await initializeBlogData();
-  const posts = await redis.get<BlogPost[]>(POSTS_KEY);
+  const posts = await redis.get(POSTS_KEY) as BlogPost[] | null;
   return posts || [];
 }
 
@@ -102,18 +102,18 @@ export async function getPublishedPosts(): Promise<BlogPost[]> {
 }
 
 export async function getPostById(id: string): Promise<BlogPost | null> {
-  const post = await redis.get<BlogPost>(`${POST_PREFIX}${id}`);
+  const post = await redis.get(`${POST_PREFIX}${id}`) as BlogPost | null;
   return post;
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-  const postId = await redis.get<string>(`${SLUG_INDEX_PREFIX}${slug}`);
+  const postId = await redis.get(`${SLUG_INDEX_PREFIX}${slug}`) as string | null;
   if (!postId) return null;
   return getPostById(postId);
 }
 
 export async function checkSlugExists(slug: string, excludeId?: string): Promise<boolean> {
-  const postId = await redis.get<string>(`${SLUG_INDEX_PREFIX}${slug}`);
+  const postId = await redis.get(`${SLUG_INDEX_PREFIX}${slug}`) as string | null;
   if (!postId) return false;
   if (excludeId && postId === excludeId) return false;
   return true;

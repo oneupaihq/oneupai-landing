@@ -4,7 +4,7 @@
 "use client";
 
 import { useState } from "react";
-import BookACallModal from "@/components/BookACallModal";
+import BookACallModal from "./BookACallModal";
 
 export default function HeroSection() {
   const [modalOpen, setModalOpen] = useState(false);

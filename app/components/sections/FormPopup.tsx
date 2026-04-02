@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import CustomCalendar from "../ui/CustomCalendar";
+import BookingCalendar from "../ui/BookingCalendar";
 
 export type PopupVariant = "community" | "sales";
 type Step = "form" | "calendar";
@@ -316,6 +316,17 @@ export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) 
                         )}
                       </button>
 
+                      {/* Skip Button for Testing - Sales Only */}
+                      {variant === 'sales' && (
+                        <button
+                          type="button"
+                          onClick={() => setStep('calendar')}
+                          className="mt-3 w-full rounded-[12px] border border-[#E2E8F0] text-[#1A80E7] hover:bg-[#EAF6FB] font-medium text-base py-3 transition-all duration-200"
+                        >
+                          Skip for Testing →
+                        </button>
+                      )}
+
                       <div className="text-center">
                         {/* Call us — sales only */}
                         {variant === "sales" && (
@@ -379,7 +390,7 @@ export default function FormPopup({ isOpen, onClose, variant }: FormPopupProps) 
                     </button>
 
                     {/* Custom Styled Calendar */}
-                    <CustomCalendar 
+                    <BookingCalendar 
                       name={formData.name} 
                       email={formData.email}
                       className="mb-4"
