@@ -4,18 +4,23 @@ import { sendEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('Booking endpoint called');
     const bookingData: BookingData = await request.json();
+    console.log('Booking data received:', bookingData);
     
     // Validate required fields
     if (!bookingData.date || !bookingData.time || !bookingData.name || !bookingData.email) {
+      console.log('Missing required fields');
       return NextResponse.json(
         { success: false, error: 'Missing required booking information' },
         { status: 400 }
       );
     }
 
+    console.log('Creating calendar event...');
     // Create the calendar event
     const calendarResult = await createCalendarEvent(bookingData);
+    console.log('Calendar result:', calendarResult);
     
     if (!calendarResult.success) {
       return NextResponse.json(
@@ -23,6 +28,8 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+
+    console.log('Calendar event created successfully');
 
     // Send confirmation emails
     try {
@@ -39,6 +46,7 @@ export async function POST(request: NextRequest) {
             <p><strong>Time:</strong> ${bookingData.time}</p>
             <p><strong>Message:</strong> ${bookingData.message || 'No message provided'}</p>
             <p><strong>Event ID:</strong> ${calendarResult.eventId}</p>
+            ${calendarResult.meetLink ? `<p><strong>Google Meet Link:</strong> <a href="${calendarResult.meetLink}">${calendarResult.meetLink}</a></p>` : ''}
           `
         };
         await sendEmail(adminEmail, adminTemplate);
@@ -60,11 +68,20 @@ export async function POST(request: NextRequest) {
                 month: 'long', 
                 day: 'numeric' 
               })}</p>
-              <p><strong>🕐 Time:</strong> ${bookingData.time}</p>
+              <p><strong>🕐 Time:</strong> ${bookingData.time} EST</p>
               <p><strong>⏱️ Duration:</strong> 30 minutes</p>
+              ${calendarResult.meetLink ? `<p><strong>🎥 Meeting Link:</strong> <a href="${calendarResult.meetLink}" style="color: #1A80E7; text-decoration: none;">${calendarResult.meetLink}</a></p>` : ''}
             </div>
             
-            <p>You should receive a calendar invite shortly with the meeting link.</p>
+            ${calendarResult.meetLink ? `
+            <div style="background: #FFF3CD; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #FFC107;">
+              <p style="margin: 0;"><strong>📌 Save this link:</strong> You'll use this Google Meet link to join the call at the scheduled time.</p>
+            </div>
+            ` : `
+            <div style="background: #E3F2FD; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #1A80E7;">
+              <p style="margin: 0;"><strong>📞 Meeting Details:</strong> We'll send you the meeting link shortly, or you can call us at <strong>1-833-ONEUPAI (663-8724)</strong></p>
+            </div>
+            `}
             
             <p><strong>What to expect:</strong></p>
             <ul>
@@ -74,7 +91,7 @@ export async function POST(request: NextRequest) {
               <li>Next steps for getting started</li>
             </ul>
             
-            <p>If you need to reschedule or have any questions, please reply to this email.</p>
+            <p>If you need to reschedule or have any questions, please reply to this email or call us at 1-833-ONEUPAI (663-8724).</p>
             
             <p>Looking forward to speaking with you!</p>
             <p>The OneUpAI Team</p>
@@ -91,6 +108,7 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'Calendar event created successfully',
       eventId: calendarResult.eventId,
+      meetLink: calendarResult.meetLink,
       data: {
         date: bookingData.date,
         time: bookingData.time,

@@ -1,16 +1,18 @@
 import { google } from 'googleapis';
 
-// Initialize Google Calendar API
+// Initialize Google Calendar API with OAuth
 const getGoogleAuth = () => {
-  const auth = new google.auth.GoogleAuth({
-    credentials: {
-      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    },
-    scopes: ['https://www.googleapis.com/auth/calendar'],
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    'https://developers.google.com/oauthplayground' // redirect URI
+  );
+
+  oauth2Client.setCredentials({
+    refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
   });
-  
-  return auth;
+
+  return oauth2Client;
 };
 
 const calendar = google.calendar({ version: 'v3', auth: getGoogleAuth() });
@@ -109,7 +111,7 @@ function generateDaySlots(date: Date, busyTimes: any[]): string[] {
 }
 
 // Create a calendar event
-export async function createCalendarEvent(bookingData: BookingData): Promise<{ success: boolean; eventId?: string; error?: string }> {
+export async function createCalendarEvent(bookingData: BookingData): Promise<{ success: boolean; eventId?: string; meetLink?: string; error?: string }> {
   try {
     const calendarId = process.env.GOOGLE_CALENDAR_ID;
     if (!calendarId) {
@@ -162,12 +164,18 @@ This is a 30-minute consultation to discuss how OneUpAI can help grow their busi
       calendarId,
       requestBody: event,
       conferenceDataVersion: 1,
-      sendUpdates: 'all',
+      sendUpdates: 'all', // Google will send calendar invites automatically
     });
+
+    // Extract the Google Meet link from the response
+    const meetLink = response.data.conferenceData?.entryPoints?.find(
+      (entry) => entry.entryPointType === 'video'
+    )?.uri || response.data.hangoutLink || undefined;
 
     return {
       success: true,
       eventId: response.data.id || undefined,
+      meetLink: meetLink,
     };
   } catch (error) {
     console.error('Error creating calendar event:', error);
