@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { PopupProvider } from "./components/sections/PopupContext";
+import Script from "next/script";
 // import TawkToChat from "./components/TawkToChat"; // Commented out - using custom chat instead
 // import RAGbotChat from "./components/RAGbotChat"; // Commented out - using custom chat instead
 
@@ -46,6 +47,12 @@ export default function RootLayout({
         </PopupProvider>
         {/* <TawkToChat /> */} {/* Commented out - using custom chat instead */}
         {/* <RAGbotChat /> */} {/* Commented out - using custom chat instead */}
+        <Script
+          src="https://cdn.affonso.io/js/pixel.min.js"
+          data-affonso="cmnhqvs13006b12ypuou0cj2s"
+          data-cookie_duration="30"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
